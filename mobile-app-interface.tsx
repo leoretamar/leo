@@ -1,923 +1,647 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
+  Smartphone,
   QrCode,
-  Camera,
-  Search,
-  User,
   Bell,
+  Users,
+  BarChart3,
   Settings,
+  Download,
+  Share2,
+  Heart,
+  Star,
   Package,
   Leaf,
-  Award,
-  Recycle,
-  MapPin,
-  Clock,
-  CheckCircle,
-  ArrowLeft,
-  Heart,
-  Share2,
-  Gift,
-  Globe,
-  Home,
+  TrendingUp,
+  Eye,
+  Send,
+  Wifi,
+  Battery,
 } from "lucide-react"
 
-interface Product {
-  id: string
-  codigo: string
-  nombre: string
-  imagen: string
-  storytelling: string
-  origen: string
-  artesano: string
-  impacto: {
-    co2: number
-    agua: number
-    reciclable: number
-  }
-  certificaciones: string[]
-  timeline: Array<{
-    fecha: string
-    evento: string
-    responsable: string
-  }>
-}
-
-interface DevolucionRequest {
-  id: string
-  producto_codigo: string
-  codigo_devolucion: string
-  fecha_solicitud: string
-  estado: "Pendiente" | "Entregado" | "Procesado"
-  recompensa: string
-  punto_recoleccion?: string
-}
-
 export default function MobileAppInterface() {
-  const [currentView, setCurrentView] = useState<
-    "home" | "scan" | "product" | "epr" | "operator" | "profile" | "search"
-  >("home")
-  const [userRole, setUserRole] = useState<"consumer" | "operator" | "guest">("guest")
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-  const [language, setLanguage] = useState<"es" | "en" | "pt">("es")
-  const [scannedCode, setScannedCode] = useState("")
+  const [selectedSection, setSelectedSection] = useState("preview")
+  const [appConfig, setAppConfig] = useState({
+    theme: "light",
+    notifications: true,
+    offline_mode: true,
+    analytics: true,
+    language: "es"
+  })
 
-  const products: Product[] = [
-    {
-      id: "1",
-      codigo: "GIA-SWE-2025-001",
-      nombre: "Sweater Sol de Campo",
-      imagen: "/placeholder.svg?height=200&width=200",
-      storytelling:
-        "Este hermoso sweater fue tejido a mano por María Sosa en los Andes de Cusco, utilizando lana merino de ovejas criadas con amor y respeto por la naturaleza...",
-      origen: "Cusco, Perú",
-      artesano: "María Sosa",
-      impacto: {
-        co2: 2.3,
-        agua: 110,
-        reciclable: 95,
-      },
-      certificaciones: ["RWS", "Fair Trade", "Organic"],
-      timeline: [
-        { fecha: "15/03/25", evento: "Registro de lana merino", responsable: "María Sosa" },
-        { fecha: "16/03/25", evento: "Inicio del tejido", responsable: "María Sosa" },
-        { fecha: "20/03/25", evento: "Finalización del tejido", responsable: "María Sosa" },
-        { fecha: "22/03/25", evento: "Control de calidad", responsable: "Supervisor" },
-      ],
-    },
-  ]
-
-  const devoluciones: DevolucionRequest[] = [
-    {
-      id: "1",
-      producto_codigo: "GIA-SWE-2025-001",
-      codigo_devolucion: "DEV-2025-001",
-      fecha_solicitud: "25/03/25",
-      estado: "Pendiente",
-      recompensa: "15% descuento",
-      punto_recoleccion: "Centro Comercial Real Plaza",
-    },
-  ]
-
-  const texts = {
-    es: {
-      home: "Inicio",
-      scan: "Escanear",
-      search: "Buscar",
-      profile: "Perfil",
-      scanQR: "Escanear QR/NFC",
-      searchProduct: "Buscar producto",
-      myProducts: "Mis productos",
-      latestNews: "Últimas novedades",
-      productStory: "Historia del Producto",
-      timeline: "Línea de Tiempo",
-      environmental: "Impacto Ambiental",
-      certificates: "Certificados",
-      requestReturn: "Solicitar Devolución",
-      returnHistory: "Historial de Devoluciones",
-      validateReturn: "Validar Devolución",
-      notifications: "Notificaciones",
-      settings: "Configuración",
-      language: "Idioma",
-      logout: "Cerrar Sesión",
-    },
-    en: {
-      home: "Home",
-      scan: "Scan",
-      search: "Search",
-      profile: "Profile",
-      scanQR: "Scan QR/NFC",
-      searchProduct: "Search product",
-      myProducts: "My products",
-      latestNews: "Latest news",
-      productStory: "Product Story",
-      timeline: "Timeline",
-      environmental: "Environmental Impact",
-      certificates: "Certificates",
-      requestReturn: "Request Return",
-      returnHistory: "Return History",
-      validateReturn: "Validate Return",
-      notifications: "Notifications",
-      settings: "Settings",
-      language: "Language",
-      logout: "Logout",
-    },
-    pt: {
-      home: "Início",
-      scan: "Escanear",
-      search: "Buscar",
-      profile: "Perfil",
-      scanQR: "Escanear QR/NFC",
-      searchProduct: "Buscar produto",
-      myProducts: "Meus produtos",
-      latestNews: "Últimas notícias",
-      productStory: "História do Produto",
-      timeline: "Linha do Tempo",
-      environmental: "Impacto Ambiental",
-      certificates: "Certificados",
-      requestReturn: "Solicitar Devolução",
-      returnHistory: "Histórico de Devoluções",
-      validateReturn: "Validar Devolução",
-      notifications: "Notificações",
-      settings: "Configurações",
-      language: "Idioma",
-      logout: "Sair",
-    },
+  const mobileStats = {
+    total_downloads: 15420,
+    active_users: 8950,
+    avg_session: "4.2 min",
+    retention_rate: 78,
+    app_rating: 4.8,
+    qr_scans_today: 342
   }
 
-  const t = texts[language]
-
-  // Simular escaneo de QR
-  const handleScan = (code: string) => {
-    const product = products.find((p) => p.codigo === code)
-    if (product) {
-      setSelectedProduct(product)
-      setCurrentView("product")
+  const notifications = [
+    {
+      id: 1,
+      title: "Nueva colección disponible",
+      message: "Descubre los últimos productos artesanales de María González",
+      sent: "2024-01-20 10:30",
+      status: "Enviado",
+      opens: 1250,
+      clicks: 89
+    },
+    {
+      id: 2,
+      title: "Tu producto favorito está en oferta",
+      message: "El Sweater Artesanal Merino tiene 20% de descuento",
+      sent: "2024-01-19 15:45",
+      status: "Enviado",
+      opens: 890,
+      clicks: 156
+    },
+    {
+      id: 3,
+      title: "Impacto ambiental actualizado",
+      message: "Has ahorrado 2.3kg de CO₂ con tus compras conscientes",
+      sent: "2024-01-18 09:15",
+      status: "Programado",
+      opens: 0,
+      clicks: 0
     }
+  ]
+
+  const analyticsData = {
+    daily_users: [
+      { day: "Lun", users: 1200 },
+      { day: "Mar", users: 1350 },
+      { day: "Mié", users: 1180 },
+      { day: "Jue", users: 1420 },
+      { day: "Vie", users: 1650 },
+      { day: "Sáb", users: 1890 },
+      { day: "Dom", users: 1560 }
+    ],
+    top_features: [
+      { feature: "Escaneo QR", usage: 85 },
+      { feature: "Historial de Productos", usage: 72 },
+      { feature: "Impacto Personal", usage: 68 },
+      { feature: "Compartir Historia", usage: 45 },
+      { feature: "Favoritos", usage: 38 }
+    ]
   }
 
-  // Mobile Navigation Component
-  const MobileNavigation = () => (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
-      <div className="flex justify-around">
-        <Button
-          variant={currentView === "home" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setCurrentView("home")}
-          className="flex flex-col items-center gap-1 h-auto py-2"
-        >
-          <Home className="w-5 h-5" />
-          <span className="text-xs">{t.home}</span>
-        </Button>
-        <Button
-          variant={currentView === "scan" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setCurrentView("scan")}
-          className="flex flex-col items-center gap-1 h-auto py-2"
-        >
-          <QrCode className="w-5 h-5" />
-          <span className="text-xs">{t.scan}</span>
-        </Button>
-        <Button
-          variant={currentView === "search" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setCurrentView("search")}
-          className="flex flex-col items-center gap-1 h-auto py-2"
-        >
-          <Search className="w-5 h-5" />
-          <span className="text-xs">{t.search}</span>
-        </Button>
-        <Button
-          variant={currentView === "profile" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setCurrentView("profile")}
-          className="flex flex-col items-center gap-1 h-auto py-2"
-        >
-          <User className="w-5 h-5" />
-          <span className="text-xs">{t.profile}</span>
-        </Button>
-      </div>
-    </div>
-  )
-
-  // Home Screen
-  if (currentView === "home") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">GIA Trazabilidad</h1>
-              <p className="text-blue-100 text-sm">Descubre la historia de tus productos</p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="sm" className="text-white">
-                <Bell className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-white">
-                <Settings className="w-5 h-5" />
-              </Button>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Aplicación Móvil GIA</h1>
+            <p className="text-gray-600">Gestión y analytics de la app móvil</p>
           </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Card className="cursor-pointer hover:shadow-md" onClick={() => setCurrentView("scan")}>
-              <CardContent className="p-4 text-center">
-                <QrCode className="w-12 h-12 mx-auto text-blue-600 mb-2" />
-                <p className="font-medium">{t.scanQR}</p>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-md" onClick={() => setCurrentView("search")}>
-              <CardContent className="p-4 text-center">
-                <Search className="w-12 h-12 mx-auto text-green-600 mb-2" />
-                <p className="font-medium">{t.searchProduct}</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {userRole !== "guest" && (
-            <Card className="cursor-pointer hover:shadow-md">
-              <CardContent className="p-4 text-center">
-                <Package className="w-12 h-12 mx-auto text-purple-600 mb-2" />
-                <p className="font-medium">{t.myProducts}</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Latest News */}
-        <div className="p-4">
-          <h2 className="text-lg font-bold mb-4">{t.latestNews}</h2>
-          <div className="space-y-3">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Leaf className="w-8 h-8 text-green-500" />
-                  <div>
-                    <p className="font-medium">Nueva colección sostenible</p>
-                    <p className="text-sm text-gray-600">100% materiales reciclados</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Gift className="w-8 h-8 text-purple-500" />
-                  <div>
-                    <p className="font-medium">Programa de recompensas</p>
-                    <p className="text-sm text-gray-600">Recicla y obtén descuentos</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <MobileNavigation />
-      </div>
-    )
-  }
-
-  // Scan Screen
-  if (currentView === "scan") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="p-4">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentView("home")}>
-              <ArrowLeft className="w-5 h-5" />
+          <div className="flex items-center gap-4">
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Descargar APK
             </Button>
-            <h1 className="text-xl font-bold">{t.scanQR}</h1>
+            <Button>
+              <Settings className="w-4 h-4 mr-2" />
+              Configurar
+            </Button>
           </div>
+        </div>
 
-          {/* Camera Simulation */}
-          <div className="relative mb-6">
-            <div className="aspect-square bg-gray-900 rounded-lg flex items-center justify-center">
-              <div className="w-48 h-48 border-2 border-white rounded-lg flex items-center justify-center">
-                <Camera className="w-16 h-16 text-white" />
-              </div>
-            </div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-              <p className="text-white text-sm text-center">Apunta la cámara al código QR</p>
-            </div>
-          </div>
-
-          {/* Manual Input */}
+        {/* Mobile Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Ingreso Manual</CardTitle>
-              <CardDescription>Si no puedes escanear, ingresa el código manualmente</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Input
-                placeholder="Código del producto (ej: GIA-SWE-2025-001)"
-                value={scannedCode}
-                onChange={(e) => setScannedCode(e.target.value)}
-              />
-              <Button className="w-full" onClick={() => handleScan(scannedCode)} disabled={!scannedCode}>
-                Buscar Producto
-              </Button>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Descargas</p>
+                  <p className="text-2xl font-bold text-blue-600">{mobileStats.total_downloads.toLocaleString()}</p>
+                </div>
+                <Smartphone className="w-8 h-8 text-blue-600" />
+              </div>
             </CardContent>
           </Card>
 
-          {/* Quick Scan Examples */}
-          <div className="mt-6">
-            <h3 className="font-medium mb-3">Productos de ejemplo:</h3>
-            <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" onClick={() => handleScan("GIA-SWE-2025-001")}>
-                <QrCode className="w-4 h-4 mr-2" />
-                GIA-SWE-2025-001 - Sweater Sol de Campo
-              </Button>
-            </div>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Usuarios Activos</p>
+                  <p className="text-2xl font-bold text-green-600">{mobileStats.active_users.toLocaleString()}</p>
+                </div>
+                <Users className="w-8 h-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Sesión Promedio</p>
+                  <p className="text-2xl font-bold text-purple-600">{mobileStats.avg_session}</p>
+                </div>
+                <BarChart3 className="w-8 h-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Retención</p>
+                  <p className="text-2xl font-bold text-orange-600">{mobileStats.retention_rate}%</p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-orange-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Rating</p>
+                  <p className="text-2xl font-bold text-yellow-600">{mobileStats.app_rating}</p>
+                </div>
+                <Star className="w-8 h-8 text-yellow-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Escaneos Hoy</p>
+                  <p className="text-2xl font-bold text-indigo-600">{mobileStats.qr_scans_today}</p>
+                </div>
+                <QrCode className="w-8 h-8 text-indigo-600" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <MobileNavigation />
-      </div>
-    )
-  }
+        {/* Main Content */}
+        <Tabs defaultValue="preview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="preview">Vista Previa</TabsTrigger>
+            <TabsTrigger value="config">Configuración</TabsTrigger>
+            <TabsTrigger value="notifications">Notificaciones</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
 
-  // Product Detail Screen
-  if (currentView === "product" && selectedProduct) {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="relative">
-          {/* Header with back button */}
-          <div className="absolute top-4 left-4 z-10">
-            <Button variant="ghost" size="sm" className="bg-white/80" onClick={() => setCurrentView("home")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-          </div>
+          <TabsContent value="preview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Mobile Mockup */}
+              <div className="lg:col-span-1">
+                <Card className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+                  <CardContent className="p-6">
+                    <div className="mx-auto max-w-sm">
+                      {/* Phone Frame */}
+                      <div className="bg-black rounded-3xl p-2 shadow-2xl">
+                        <div className="bg-white rounded-2xl overflow-hidden">
+                          {/* Status Bar */}
+                          <div className="bg-gray-900 text-white px-4 py-2 flex justify-between items-center text-xs">
+                            <span>9:41</span>
+                            <div className="flex items-center gap-1">
+                              <Wifi className="w-3 h-3" />
+                              <Battery className="w-4 h-3" />
+                            </div>
+                          </div>
+                          
+                          {/* App Content */}
+                          <div className="bg-gradient-to-br from-stone-50 to-amber-50 h-96 p-4">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h2 className="text-lg font-bold text-gray-900">GIA</h2>
+                              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                <QrCode className="w-4 h-4 text-gray-600" />
+                              </div>
+                            </div>
 
-          {/* Product Image */}
-          <div className="h-64 bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
-            <Package className="w-24 h-24 text-gray-400" />
-          </div>
+                            {/* Featured Product */}
+                            <div className="bg-white rounded-lg p-3 mb-4 shadow-sm">
+                              <div className="w-full h-24 bg-gray-100 rounded mb-2"></div>
+                              <h3 className="font-medium text-gray-900 text-sm">Sweater Artesanal</h3>
+                              <p className="text-xs text-gray-600">María González</p>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Leaf className="w-3 h-3 text-green-500" />
+                                <span className="text-xs text-green-600">2.3kg CO₂ ahorrado</span>
+                              </div>
+                            </div>
 
-          {/* Product Info */}
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-xl font-bold">{selectedProduct.nombre}</h1>
-                <p className="text-gray-600">{selectedProduct.codigo}</p>
+                            {/* Quick Actions */}
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                              <div className="bg-blue-50 rounded-lg p-2 text-center">
+                                <QrCode className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                                <span className="text-xs text-blue-800">Escanear</span>
+                              </div>
+                              <div className="bg-green-50 rounded-lg p-2 text-center">
+                                <Heart className="w-5 h-5 text-green-600 mx-auto mb-1" />
+                                <span className="text-xs text-green-800">Favoritos</span>
+                              </div>
+                            </div>
+
+                            {/* Bottom Navigation */}
+                            <div className="absolute bottom-4 left-4 right-4 bg-white rounded-full p-2 shadow-lg">
+                              <div className="flex justify-around">
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                  <Package className="w-4 h-4 text-blue-600" />
+                                </div>
+                                <QrCode className="w-6 h-6 text-gray-400" />
+                                <BarChart3 className="w-6 h-6 text-gray-400" />
+                                <Settings className="w-6 h-6 text-gray-400" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm">
-                  <Heart className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Share2 className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
 
-            <Tabs defaultValue="story" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="story">Historia</TabsTrigger>
-                <TabsTrigger value="timeline">Proceso</TabsTrigger>
-                <TabsTrigger value="impact">Impacto</TabsTrigger>
-                <TabsTrigger value="certs">Certificados</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="story" className="space-y-4">
+              {/* App Features */}
+              <div className="lg:col-span-2 space-y-6">
                 <Card>
-                  <CardContent className="p-4">
-                    <h3 className="font-medium mb-2">{t.productStory}</h3>
-                    <p className="text-sm text-gray-700 leading-relaxed">{selectedProduct.storytelling}</p>
+                  <CardHeader>
+                    <CardTitle>Características Principales</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
+                        <QrCode className="w-6 h-6 text-blue-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-blue-900">Escáner QR Nativo</h4>
+                          <p className="text-sm text-blue-700">Escaneo rápido y preciso de códigos QR de productos</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg">
+                        <Package className="w-6 h-6 text-green-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-green-900">Historial Personal</h4>
+                          <p className="text-sm text-green-700">Guarda y organiza todos tus productos escaneados</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg">
+                        <BarChart3 className="w-6 h-6 text-purple-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-purple-900">Impacto Personal</h4>
+                          <p className="text-sm text-purple-700">Visualiza tu contribución al medio ambiente</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-orange-50 rounded-lg">
+                        <Wifi className="w-6 h-6 text-orange-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-orange-900">Modo Offline</h4>
+                          <p className="text-sm text-orange-700">Funciona sin conexión a internet</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-pink-50 rounded-lg">
+                        <Share2 className="w-6 h-6 text-pink-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-pink-900">Compartir Historias</h4>
+                          <p className="text-sm text-pink-700">Comparte las historias de productos en redes sociales</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-indigo-50 rounded-lg">
+                        <Bell className="w-6 h-6 text-indigo-600 mt-1" />
+                        <div>
+                          <h4 className="font-medium text-indigo-900">Notificaciones Push</h4>
+                          <p className="text-sm text-indigo-700">Recibe actualizaciones sobre nuevos productos</p>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <User className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-                      <p className="font-medium">Artesana</p>
-                      <p className="text-sm text-gray-600">{selectedProduct.artesano}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <MapPin className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                      <p className="font-medium">Origen</p>
-                      <p className="text-sm text-gray-600">{selectedProduct.origen}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="timeline" className="space-y-3">
-                {selectedProduct.timeline.map((event, index) => (
-                  <div key={index} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      {index < selectedProduct.timeline.length - 1 && <div className="w-px h-8 bg-gray-200 mt-2"></div>}
-                    </div>
-                    <div className="flex-1 pb-4">
-                      <p className="font-medium text-sm">{event.evento}</p>
-                      <p className="text-xs text-gray-600">{event.responsable}</p>
-                      <p className="text-xs text-gray-500">{event.fecha}</p>
-                    </div>
-                  </div>
-                ))}
-              </TabsContent>
-
-              <TabsContent value="impact" className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Leaf className="w-8 h-8 mx-auto text-red-600 mb-2" />
-                      <p className="text-lg font-bold">{selectedProduct.impacto.co2}kg</p>
-                      <p className="text-xs text-gray-600">CO₂</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Package className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-                      <p className="text-lg font-bold">{selectedProduct.impacto.agua}L</p>
-                      <p className="text-xs text-gray-600">Agua</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Recycle className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                      <p className="text-lg font-bold">{selectedProduct.impacto.reciclable}%</p>
-                      <p className="text-xs text-gray-600">Reciclable</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="certs" className="space-y-3">
-                {selectedProduct.certificaciones.map((cert, index) => (
-                  <Card key={index}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Award className="w-8 h-8 text-green-500" />
-                        <div>
-                          <p className="font-medium">{cert}</p>
-                          <p className="text-sm text-gray-600">Certificado válido</p>
-                        </div>
-                        <CheckCircle className="w-5 h-5 text-green-500 ml-auto" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </TabsContent>
-            </Tabs>
-
-            {/* Action Button */}
-            <div className="mt-6">
-              <Button className="w-full" onClick={() => setCurrentView("epr")}>
-                <Recycle className="w-4 h-4 mr-2" />
-                {t.requestReturn}
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <MobileNavigation />
-      </div>
-    )
-  }
-
-  // EPR (Return/Recycling) Screen
-  if (currentView === "epr") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="p-4">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentView("product")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <h1 className="text-xl font-bold">Reciclaje y Devoluciones</h1>
-          </div>
-
-          {userRole === "guest" && (
-            <Card className="mb-6">
-              <CardContent className="p-4 text-center">
-                <User className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                <p className="font-medium mb-2">Inicia sesión para continuar</p>
-                <p className="text-sm text-gray-600 mb-4">
-                  Necesitas una cuenta para solicitar devoluciones y obtener recompensas
-                </p>
-                <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1" onClick={() => setUserRole("consumer")}>
-                    Iniciar Sesión
-                  </Button>
-                  <Button className="flex-1" onClick={() => setUserRole("consumer")}>
-                    Registrarse
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {userRole !== "guest" && (
-            <>
-              {/* Request Return */}
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Recycle className="w-5 h-5" />
-                    Solicitar Devolución
-                  </CardTitle>
-                  <CardDescription>
-                    {selectedProduct
-                      ? `${selectedProduct.nombre} - ${selectedProduct.codigo}`
-                      : "Producto seleccionado"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <Gift className="w-12 h-12 mx-auto text-green-600 mb-2" />
-                    <p className="font-medium text-green-800">Recompensa: 15% descuento</p>
-                    <p className="text-sm text-green-700">En tu próxima compra</p>
-                  </div>
-
-                  <Button className="w-full">
-                    <QrCode className="w-4 h-4 mr-2" />
-                    Generar Código de Devolución
-                  </Button>
-
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-2">Puntos de recolección cercanos:</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <span>Centro Comercial Real Plaza - 2.3km</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <span>Tienda GIA Cusco - 5.1km</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Return History */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t.returnHistory}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {devoluciones.length > 0 ? (
-                    <div className="space-y-3">
-                      {devoluciones.map((devolucion) => (
-                        <div key={devolucion.id} className="border rounded-lg p-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="font-medium text-sm">{devolucion.producto_codigo}</p>
-                            <Badge
-                              className={
-                                devolucion.estado === "Procesado"
-                                  ? "bg-green-100 text-green-800"
-                                  : devolucion.estado === "Entregado"
-                                    ? "bg-blue-100 text-blue-800"
-                                    : "bg-yellow-100 text-yellow-800"
-                              }
-                            >
-                              {devolucion.estado}
-                            </Badge>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Funciones Más Utilizadas</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {analyticsData.top_features.map((feature, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-gray-900">{feature.feature}</span>
+                            <span className="text-sm text-gray-600">{feature.usage}%</span>
                           </div>
-                          <p className="text-xs text-gray-600">Código: {devolucion.codigo_devolucion}</p>
-                          <p className="text-xs text-gray-600">Recompensa: {devolucion.recompensa}</p>
-                          <p className="text-xs text-gray-500">{devolucion.fecha_solicitud}</p>
+                          <Progress value={feature.usage} className="h-2" />
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Recycle className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                      <p className="text-gray-600">No tienes devoluciones registradas</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </>
-          )}
-        </div>
-
-        <MobileNavigation />
-      </div>
-    )
-  }
-
-  // Profile Screen
-  if (currentView === "profile") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="p-4">
-          <h1 className="text-xl font-bold mb-6">{t.profile}</h1>
-
-          {userRole === "guest" ? (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h2 className="text-lg font-medium mb-2">Bienvenido a GIA</h2>
-                <p className="text-gray-600 mb-6">Inicia sesión para acceder a todas las funcionalidades</p>
-                <div className="space-y-3">
-                  <Button className="w-full" onClick={() => setUserRole("consumer")}>
-                    Iniciar Sesión
-                  </Button>
-                  <Button variant="outline" className="w-full" onClick={() => setUserRole("consumer")}>
-                    Crear Cuenta
-                  </Button>
-                  <Button variant="ghost" className="w-full" onClick={() => setUserRole("operator")}>
-                    Acceso Operador
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              {/* User Info */}
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="w-8 h-8 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="font-medium">
-                        {userRole === "consumer" ? "Usuario Consumidor" : "Operador de Punto"}
-                      </h2>
-                      <p className="text-sm text-gray-600">usuario@example.com</p>
-                      <Badge className="mt-1">{userRole === "consumer" ? "Consumidor" : "Operador"}</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Stats */}
-              {userRole === "consumer" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Package className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-                      <p className="text-lg font-bold">3</p>
-                      <p className="text-sm text-gray-600">Productos Escaneados</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Recycle className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                      <p className="text-lg font-bold">1</p>
-                      <p className="text-sm text-gray-600">Productos Reciclados</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
-
-              {/* Menu Options */}
-              <div className="space-y-3">
-                <Card className="cursor-pointer hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Bell className="w-5 h-5 text-gray-600" />
-                      <span className="flex-1">{t.notifications}</span>
-                      <Badge variant="outline">2</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="cursor-pointer hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Globe className="w-5 h-5 text-gray-600" />
-                      <span className="flex-1">{t.language}</span>
-                      <select
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value as "es" | "en" | "pt")}
-                        className="text-sm border rounded px-2 py-1"
-                      >
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                        <option value="pt">Português</option>
-                      </select>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="cursor-pointer hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Settings className="w-5 h-5 text-gray-600" />
-                      <span className="flex-1">{t.settings}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {userRole === "operator" && (
-                  <Card className="cursor-pointer hover:shadow-md" onClick={() => setCurrentView("operator")}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                        <span className="flex-1">{t.validateReturn}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                <Card className="cursor-pointer hover:shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <User className="w-5 h-5 text-red-600" />
-                      <span className="flex-1 text-red-600" onClick={() => setUserRole("guest")}>
-                        {t.logout}
-                      </span>
-                    </div>
                   </CardContent>
                 </Card>
               </div>
             </div>
-          )}
-        </div>
+          </TabsContent>
 
-        <MobileNavigation />
-      </div>
-    )
-  }
-
-  // Operator Screen
-  if (currentView === "operator" && userRole === "operator") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="p-4">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentView("profile")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <h1 className="text-xl font-bold">{t.validateReturn}</h1>
-          </div>
-
-          <div className="space-y-6">
-            {/* Scan Return Code */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <QrCode className="w-5 h-5" />
-                  Validar Código de Devolución
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="aspect-square bg-gray-900 rounded-lg flex items-center justify-center">
-                  <div className="w-32 h-32 border-2 border-white rounded-lg flex items-center justify-center">
-                    <Camera className="w-12 h-12 text-white" />
+          <TabsContent value="config" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configuración General</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="app-name">Nombre de la Aplicación</Label>
+                    <Input id="app-name" defaultValue="GIA Trazabilidad" />
                   </div>
-                </div>
-                <p className="text-center text-sm text-gray-600">Escanea el código de devolución del cliente</p>
 
-                <div className="space-y-3">
-                  <Input placeholder="O ingresa el código manualmente" />
-                  <Button className="w-full">
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Validar Devolución
+                  <div className="space-y-2">
+                    <Label htmlFor="app-version">Versión</Label>
+                    <Input id="app-version" defaultValue="2.1.0" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="language">Idioma por Defecto</Label>
+                    <Select defaultValue="es">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="es">Español</SelectItem>
+                        <SelectItem value="en">English</SelectItem>
+                        <SelectItem value="pt">Português</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Modo Offline</Label>
+                      <p className="text-sm text-gray-600">Permitir uso sin conexión</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Analytics</Label>
+                      <p className="text-sm text-gray-600">Recopilar datos de uso</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configuración de Notificaciones</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Notificaciones Push</Label>
+                      <p className="text-sm text-gray-600">Enviar notificaciones a usuarios</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Nuevos Productos</Label>
+                      <p className="text-sm text-gray-600">Notificar sobre nuevos productos</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Ofertas Especiales</Label>
+                      <p className="text-sm text-gray-600">Promociones y descuentos</p>
+                    </div>
+                    <Switch />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Recordatorios</Label>
+                      <p className="text-sm text-gray-600">Recordar escanear productos</p>
+                    </div>
+                    <Switch />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Frecuencia de Notificaciones</Label>
+                    <Select defaultValue="weekly">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Diario</SelectItem>
+                        <SelectItem value="weekly">Semanal</SelectItem>
+                        <SelectItem value="monthly">Mensual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Personalización</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>Tema de la Aplicación</Label>
+                    <Select defaultValue="light">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">Claro</SelectItem>
+                        <SelectItem value="dark">Oscuro</SelectItem>
+                        <SelectItem value="auto">Automático</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Color Principal</Label>
+                    <div className="flex gap-2">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full border-2 border-blue-600"></div>
+                      <div className="w-8 h-8 bg-green-500 rounded-full"></div>
+                      <div className="w-8 h-8 bg-purple-500 rounded-full"></div>
+                      <div className="w-8 h-8 bg-orange-500 rounded-full"></div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Animaciones</Label>
+                      <p className="text-sm text-gray-600">Efectos visuales y transiciones</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Sonidos</Label>
+                      <p className="text-sm text-gray-600">Efectos de sonido</p>
+                    </div>
+                    <Switch />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Vibración</Label>
+                      <p className="text-sm text-gray-600">Feedback háptico</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Seguridad y Privacidad</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Autenticación Biométrica</Label>
+                      <p className="text-sm text-gray-600">Huella dactilar o Face ID</p>
+                    </div>
+                    <Switch />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Encriptación de Datos</Label>
+                      <p className="text-sm text-gray-600">Proteger información personal</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Compartir Datos de Uso</Label>
+                      <p className="text-sm text-gray-600">Ayudar a mejorar la app</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Retención de Datos</Label>
+                    <Select defaultValue="1year">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="6months">6 meses</SelectItem>
+                        <SelectItem value="1year">1 año</SelectItem>
+                        <SelectItem value="2years">2 años</SelectItem>
+                        <SelectItem value="indefinite">Indefinido</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="notifications" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Historial de Notificaciones</CardTitle>
+                  <Button>
+                    <Send className="w-4 h-4 mr-2" />
+                    Nueva Notificación
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Pending Returns */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Devoluciones Pendientes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {devoluciones
-                    .filter((d) => d.estado === "Pendiente")
-                    .map((devolucion) => (
-                      <div key={devolucion.id} className="border rounded-lg p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="font-medium text-sm">{devolucion.codigo_devolucion}</p>
-                          <Badge className="bg-yellow-100 text-yellow-800">{devolucion.estado}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {notifications.map((notification) => (
+                      <div key={notification.id} className="border rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="font-medium text-gray-900">{notification.title}</h4>
+                            <p className="text-sm text-gray-600">{notification.message}</p>
+                          </div>
+                          <Badge className={notification.status === "Enviado" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>
+                            {notification.status}
+                          </Badge>
                         </div>
-                        <p className="text-xs text-gray-600">Producto: {devolucion.producto_codigo}</p>
-                        <p className="text-xs text-gray-600">Recompensa: {devolucion.recompensa}</p>
-                        <Button size="sm" className="mt-2 w-full">
-                          Confirmar Entrega
-                        </Button>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{notification.sent}</span>
+                          <div className="flex gap-4">
+                            <span>👁 {notification.opens} aperturas</span>
+                            <span>👆 {notification.clicks} clics</span>
+                          </div>
+                        </div>
                       </div>
                     ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Daily Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <CheckCircle className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                  <p className="text-lg font-bold">12</p>
-                  <p className="text-sm text-gray-600">Validadas Hoy</p>
+                  </div>
                 </CardContent>
               </Card>
+
               <Card>
-                <CardContent className="p-4 text-center">
-                  <Clock className="w-8 h-8 mx-auto text-yellow-600 mb-2" />
-                  <p className="text-lg font-bold">3</p>
-                  <p className="text-sm text-gray-600">Pendientes</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
+                <CardHeader>
+                  <CardTitle>Métricas de Notificaciones</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <Bell className="w-8 h-8 mx-auto text-blue-600 mb-2" />
+                    <p className="text-2xl font-bold text-blue-600">24</p>
+                    <p className="text-sm text-blue-700">Enviadas este mes</p>
+                  </div>
 
-        <MobileNavigation />
-      </div>
-    )
-  }
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <Eye className="w-8 h-8 mx-auto text-green-600 mb-2" />
+                    <p className="text-2xl font-bold text-green-600">78%</p>
+                    <p className="text-sm text-green-700">Tasa de apertura</p>
+                  </div>
 
-  // Search Screen
-  if (currentView === "search") {
-    return (
-      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
-        <div className="p-4">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentView("home")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <h1 className="text-xl font-bold">{t.searchProduct}</h1>
-          </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <TrendingUp className="w-8 h-8 mx-auto text-purple-600 mb-2" />
+                    <p className="text-2xl font-bold text-purple-600">12%</p>
+                    <p className="text-sm text-purple-700">Tasa de clics</p>
+                  </div>
 
-          <div className="space-y-4">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input placeholder="Buscar por código o nombre..." className="pl-10" />
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="font-medium">Productos recientes:</h3>
-              {products.map((product) => (
-                <Card
-                  key={product.id}
-                  className="cursor-pointer hover:shadow-md"
-                  onClick={() => {
-                    setSelectedProduct(product)
-                    setCurrentView("product")
-                  }}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-6 h-6 text-gray-400" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">{product.nombre}</p>
-                        <p className="text-sm text-gray-600">{product.codigo}</p>
-                        <div className="flex gap-1 mt-1">
-                          {product.certificaciones.slice(0, 2).map((cert, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {cert}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-gray-900">Mejores Horarios</h4>
+                    <div className="text-sm text-gray-600">
+                      <p>📅 Martes y Jueves</p>
+                      <p>🕐 10:00 - 11:00 AM</p>
+                      <p>🌆 6:00 - 7:00 PM</p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        </div>
+          </TabsContent>
 
-        <MobileNavigation />
-      </div>
-    )
-  }
-
-  return <div>Vista no encontrada</div>
-}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Usuarios Diarios</p>
+                      <p className="text-2xl font-bold text-blue-600">2,340</p>
+                      <p className="text-xs text-green-600">+12% vs ayer</p>
+                    </div>
+                    <Users className="w-8 h-8 text-blue-600" />
+                  </div>
+                \

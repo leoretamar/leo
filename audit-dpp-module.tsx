@@ -1,336 +1,378 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Shield,
   FileText,
-  QrCode,
+  CheckCircle,
+  AlertTriangle,
+  Clock,
+  Search,
+  Filter,
   Download,
   Eye,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  Search,
   Calendar,
   User,
+  Award,
+  Package,
+  BarChart3,
+  Factory,
 } from "lucide-react"
 
-interface Auditoria {
-  id: string
-  producto_codigo: string
-  producto_nombre: string
-  auditor: string
-  fecha: string
-  estado: "Pendiente" | "En Proceso" | "Aprobada" | "Rechazada"
-  resultado: string
-  observaciones: string
-  documentos: string[]
-}
-
-interface DPP {
-  id: string
-  producto_id: string
-  codigo_producto: string
-  fecha_generacion: string
-  qr_code: string
-  pdf_url: string
-  datos_resumidos: {
-    origen: string
-    materiales: string[]
-    certificaciones: string[]
-    impacto_ambiental: string
-  }
-}
-
 export default function AuditDPPModule() {
-  const [currentView, setCurrentView] = useState<"auditorias" | "dpp" | "detalle">("auditorias")
+  const [selectedAudit, setSelectedAudit] = useState(null)
+  const [filterStatus, setFilterStatus] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedAudit, setSelectedAudit] = useState<string | null>(null)
 
-  const auditorias: Auditoria[] = [
+  const audits = [
     {
-      id: "1",
-      producto_codigo: "GIA-SWE-2025-001",
-      producto_nombre: "Sweater Sol de Campo",
-      auditor: "TextileCert",
-      fecha: "20/03/25",
-      estado: "Aprobada",
-      resultado: "Cumple todos los estándares RWS",
-      observaciones: "Excelente trazabilidad de materiales",
-      documentos: ["certificado_rws.pdf", "informe_auditoria.pdf"],
+      id: "AUD-2024-001",
+      product_id: "GIA-2024-001",
+      product_name: "Sweater Artesanal Merino",
+      artisan: "María González",
+      audit_type: "Certificación GOTS",
+      status: "Completado",
+      score: 95,
+      date: "2024-01-20",
+      auditor: "SGS Uruguay",
+      findings: [
+        { category: "Materiales", status: "Aprobado", score: 98 },
+        { category: "Proceso", status: "Aprobado", score: 94 },
+        { category: "Trazabilidad", status: "Aprobado", score: 96 },
+        { category: "Impacto Ambiental", status: "Aprobado", score: 92 },
+      ],
+      dpp_compliance: {
+        data_completeness: 98,
+        accuracy: 96,
+        transparency: 99,
+        accessibility: 97,
+      },
+      recommendations: [
+        "Mejorar documentación de proceso de teñido",
+        "Implementar medición más precisa de consumo de agua",
+      ],
     },
     {
-      id: "2",
-      producto_codigo: "GIA-BOLSO-2025-002",
-      producto_nombre: "Bolso Campo Claro",
-      auditor: "LeatherOrg",
-      fecha: "16/03/25",
-      estado: "Aprobada",
-      resultado: "Certificación LWG otorgada",
-      observaciones: "Proceso de curtido vegetal verificado",
-      documentos: ["certificado_lwg.pdf"],
+      id: "AUD-2024-002",
+      product_id: "GIA-2024-002",
+      product_name: "Cardigan Algodón Orgánico",
+      artisan: "Ana Rodríguez",
+      audit_type: "Fair Trade",
+      status: "En Proceso",
+      score: null,
+      date: "2024-01-25",
+      auditor: "Fair Trade International",
+      findings: [
+        { category: "Condiciones Laborales", status: "En Revisión", score: null },
+        { category: "Comercio Justo", status: "En Revisión", score: null },
+        { category: "Impacto Social", status: "Aprobado", score: 94 },
+        { category: "Transparencia", status: "En Revisión", score: null },
+      ],
+      dpp_compliance: {
+        data_completeness: 85,
+        accuracy: 88,
+        transparency: 92,
+        accessibility: 90,
+      },
+      recommendations: [],
     },
     {
-      id: "3",
-      producto_codigo: "GIA-CAR-2025-003",
-      producto_nombre: "Cardigan Alpaca Premium",
-      auditor: "EcoCert",
-      fecha: "25/03/25",
-      estado: "En Proceso",
-      resultado: "Pendiente",
-      observaciones: "Revisión de documentación en curso",
-      documentos: [],
+      id: "AUD-2024-003",
+      product_id: "GIA-2024-003",
+      product_name: "Poncho Tradicional",
+      artisan: "Carmen Silva",
+      audit_type: "Carbon Neutral",
+      status: "Programado",
+      score: null,
+      date: "2024-02-01",
+      auditor: "Carbon Trust",
+      findings: [],
+      dpp_compliance: {
+        data_completeness: 92,
+        accuracy: 94,
+        transparency: 96,
+        accessibility: 93,
+      },
+      recommendations: [],
     },
   ]
 
-  const dpps: DPP[] = [
-    {
-      id: "1",
-      producto_id: "1",
-      codigo_producto: "GIA-SWE-2025-001",
-      fecha_generacion: "22/03/25",
-      qr_code: "QR-DPP-001",
-      pdf_url: "/dpp/sweater-001.pdf",
-      datos_resumidos: {
-        origen: "Cusco, Perú",
-        materiales: ["Lana Merino RWS", "Botones FSC"],
-        certificaciones: ["RWS", "Fair Trade"],
-        impacto_ambiental: "2.3kg CO₂, 110L agua",
-      },
-    },
-    {
-      id: "2",
-      producto_id: "2",
-      codigo_producto: "GIA-BOLSO-2025-002",
-      fecha_generacion: "18/03/25",
-      qr_code: "QR-DPP-002",
-      pdf_url: "/dpp/bolso-002.pdf",
-      datos_resumidos: {
-        origen: "Arequipa, Perú",
-        materiales: ["Cuero LWG", "Hilo OEKO-TEX"],
-        certificaciones: ["LWG", "OEKO-TEX"],
-        impacto_ambiental: "3.1kg CO₂, 140L agua",
-      },
-    },
+  const dppMetrics = {
+    total_products: 247,
+    compliant_products: 235,
+    compliance_rate: 95,
+    avg_completeness: 94,
+    avg_accuracy: 93,
+    avg_transparency: 96,
+    pending_audits: 12,
+  }
+
+  const certificationTypes = [
+    { name: "GOTS", count: 45, compliance: 98 },
+    { name: "Fair Trade", count: 38, compliance: 96 },
+    { name: "Carbon Neutral", count: 28, compliance: 94 },
+    { name: "Organic Content", count: 52, compliance: 97 },
+    { name: "Cradle to Cradle", count: 15, compliance: 92 },
   ]
 
-  const getStatusIcon = (estado: string) => {
-    switch (estado) {
-      case "Aprobada":
-        return <CheckCircle className="w-4 h-4 text-green-500" />
+  const filteredAudits = audits.filter((audit) => {
+    const matchesSearch =
+      audit.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      audit.artisan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      audit.id.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = filterStatus === "all" || audit.status.toLowerCase().includes(filterStatus.toLowerCase())
+    return matchesSearch && matchesFilter
+  })
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completado":
+      case "Aprobado":
+        return "bg-green-100 text-green-800"
       case "En Proceso":
-        return <Clock className="w-4 h-4 text-yellow-500" />
-      case "Pendiente":
-        return <AlertCircle className="w-4 h-4 text-gray-500" />
-      case "Rechazada":
-        return <AlertCircle className="w-4 h-4 text-red-500" />
+      case "En Revisión":
+        return "bg-yellow-100 text-yellow-800"
+      case "Programado":
+        return "bg-blue-100 text-blue-800"
+      case "Rechazado":
+        return "bg-red-100 text-red-800"
       default:
-        return null
+        return "bg-gray-100 text-gray-800"
     }
   }
 
-  const getStatusBadge = (estado: string) => {
-    switch (estado) {
-      case "Aprobada":
-        return <Badge className="bg-green-100 text-green-800">{estado}</Badge>
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Completado":
+      case "Aprobado":
+        return CheckCircle
       case "En Proceso":
-        return <Badge className="bg-yellow-100 text-yellow-800">{estado}</Badge>
-      case "Pendiente":
-        return <Badge className="bg-gray-100 text-gray-800">{estado}</Badge>
-      case "Rechazada":
-        return <Badge className="bg-red-100 text-red-800">{estado}</Badge>
+      case "En Revisión":
+        return Clock
+      case "Programado":
+        return Calendar
+      case "Rechazado":
+        return AlertTriangle
       default:
-        return <Badge variant="outline">{estado}</Badge>
+        return Clock
     }
   }
 
-  const filteredAuditorias = auditorias.filter(
-    (auditoria) =>
-      auditoria.producto_codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      auditoria.producto_nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      auditoria.auditor.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
-
-  if (currentView === "detalle" && selectedAudit) {
-    const auditoria = auditorias.find((a) => a.id === selectedAudit)
-    if (!auditoria) return null
-
+  if (selectedAudit) {
+    const audit = audits.find((a) => a.id === selectedAudit)
     return (
       <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Header */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="outline" onClick={() => setCurrentView("auditorias")}>
-                ← Volver a Auditorías
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Detalle de Auditoría</h1>
-                <p className="text-gray-600">{auditoria.producto_codigo}</p>
-              </div>
-            </div>
+            <Button variant="ghost" onClick={() => setSelectedAudit(null)}>
+              ← Volver a Auditorías
+            </Button>
             <div className="flex gap-2">
-              <Button variant="outline">
+              <Button variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
-                Descargar
+                Descargar Reporte
               </Button>
-              {auditoria.estado === "Aprobada" && (
-                <Button>
-                  <QrCode className="w-4 h-4 mr-2" />
-                  Generar DPP
-                </Button>
-              )}
+              <Button variant="outline" size="sm">
+                <FileText className="w-4 h-4 mr-2" />
+                Ver DPP
+              </Button>
             </div>
           </div>
 
+          {/* Audit Header */}
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  {auditoria.producto_nombre}
-                </CardTitle>
-                {getStatusBadge(auditoria.estado)}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Auditor</label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <User className="w-4 h-4 text-gray-400" />
-                      <span>{auditoria.auditor}</span>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900 mb-2">{audit.product_name}</h1>
+                      <p className="text-gray-600">Auditoría ID: {audit.id}</p>
+                      <p className="text-gray-600">Producto ID: {audit.product_id}</p>
                     </div>
+                    <Badge className={getStatusColor(audit.status)}>{audit.status}</Badge>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Fecha de Auditoría</label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span>{auditoria.fecha}</span>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">{audit.artisan}</span>
                     </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Estado</label>
-                    <div className="flex items-center gap-2 mt-1">
-                      {getStatusIcon(auditoria.estado)}
-                      <span>{auditoria.estado}</span>
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">{audit.audit_type}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">{audit.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Factory className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">{audit.auditor}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Resultado</label>
-                    <p className="mt-1 text-sm">{auditoria.resultado}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Observaciones</label>
-                    <p className="mt-1 text-sm text-gray-700">{auditoria.observaciones}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600 mb-3 block">Documentos</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {auditoria.documentos.map((doc, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
-                      <FileText className="w-5 h-5 text-blue-500" />
-                      <span className="flex-1 text-sm">{doc}</span>
-                      <Button variant="outline" size="sm">
-                        <Download className="w-4 h-4" />
-                      </Button>
+                  {audit.score && (
+                    <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
+                      <Award className="w-12 h-12 mx-auto text-green-600 mb-3" />
+                      <p className="text-3xl font-bold text-green-600">{audit.score}/100</p>
+                      <p className="text-green-700 font-medium">Puntuación General</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    )
-  }
 
-  if (currentView === "dpp") {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Pasaportes Digitales de Producto (DPP)</h1>
-              <p className="text-gray-600">Gestión de pasaportes digitales generados</p>
-            </div>
-            <Button variant="outline" onClick={() => setCurrentView("auditorias")}>
-              ← Volver a Auditorías
-            </Button>
-          </div>
+          {/* Audit Details */}
+          <Tabs defaultValue="findings" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="findings">Hallazgos</TabsTrigger>
+              <TabsTrigger value="dpp">Cumplimiento DPP</TabsTrigger>
+              <TabsTrigger value="recommendations">Recomendaciones</TabsTrigger>
+            </TabsList>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dpps.map((dpp) => (
-              <Card key={dpp.id} className="hover:shadow-lg transition-shadow">
+            <TabsContent value="findings">
+              <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{dpp.codigo_producto}</CardTitle>
-                    <Badge className="bg-blue-100 text-blue-800">Activo</Badge>
-                  </div>
-                  <CardDescription>Generado el {dpp.fecha_generacion}</CardDescription>
+                  <CardTitle>Hallazgos de Auditoría</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center">
-                    <div className="w-24 h-24 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-3">
-                      <QrCode className="w-12 h-12 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600">QR: {dpp.qr_code}</p>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="font-medium">Origen:</span> {dpp.datos_resumidos.origen}
-                    </div>
-                    <div>
-                      <span className="font-medium">Materiales:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {dpp.datos_resumidos.materiales.map((material, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {material}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-medium">Certificaciones:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {dpp.datos_resumidos.certificaciones.map((cert, index) => (
-                          <Badge key={index} variant="outline" className="text-xs text-green-600">
-                            {cert}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-medium">Impacto:</span> {dpp.datos_resumidos.impacto_ambiental}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Ver
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Download className="w-4 h-4 mr-1" />
-                      PDF
-                    </Button>
+                <CardContent>
+                  <div className="space-y-4">
+                    {audit.findings.map((finding, index) => {
+                      const StatusIcon = getStatusIcon(finding.status)
+                      return (
+                        <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <StatusIcon className="w-5 h-5 text-gray-500" />
+                            <div>
+                              <h4 className="font-medium text-gray-900">{finding.category}</h4>
+                              <Badge className={getStatusColor(finding.status)} size="sm">
+                                {finding.status}
+                              </Badge>
+                            </div>
+                          </div>
+                          {finding.score && (
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-gray-900">{finding.score}</p>
+                              <p className="text-sm text-gray-500">/ 100</p>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+            </TabsContent>
+
+            <TabsContent value="dpp">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Cumplimiento del Pasaporte Digital de Producto (DPP)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-gray-900">Completitud de Datos</span>
+                          <span className="text-sm text-gray-600">{audit.dpp_compliance.data_completeness}%</span>
+                        </div>
+                        <Progress value={audit.dpp_compliance.data_completeness} className="h-3" />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-gray-900">Precisión</span>
+                          <span className="text-sm text-gray-600">{audit.dpp_compliance.accuracy}%</span>
+                        </div>
+                        <Progress value={audit.dpp_compliance.accuracy} className="h-3" />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-gray-900">Transparencia</span>
+                          <span className="text-sm text-gray-600">{audit.dpp_compliance.transparency}%</span>
+                        </div>
+                        <Progress value={audit.dpp_compliance.transparency} className="h-3" />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-gray-900">Accesibilidad</span>
+                          <span className="text-sm text-gray-600">{audit.dpp_compliance.accessibility}%</span>
+                        </div>
+                        <Progress value={audit.dpp_compliance.accessibility} className="h-3" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 className="font-medium text-blue-900 mb-2">Elementos Verificados</h4>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                          <li>✓ Información de materiales</li>
+                          <li>✓ Proceso de producción</li>
+                          <li>✓ Cadena de suministro</li>
+                          <li>✓ Impacto ambiental</li>
+                          <li>✓ Certificaciones</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <h4 className="font-medium text-green-900 mb-2">Cumplimiento Regulatorio</h4>
+                        <p className="text-sm text-green-800">
+                          Este producto cumple con los requisitos del DPP según la regulación europea de productos
+                          sostenibles.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="recommendations">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recomendaciones de Mejora</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {audit.recommendations.length > 0 ? (
+                    <div className="space-y-4">
+                      {audit.recommendations.map((rec, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200"
+                        >
+                          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                          <div>
+                            <p className="text-yellow-900">{rec}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <CheckCircle className="w-16 h-16 mx-auto text-green-500 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">¡Excelente trabajo!</h3>
+                      <p className="text-gray-600">No se encontraron áreas de mejora en esta auditoría.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     )
@@ -338,154 +380,282 @@ export default function AuditDPPModule() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Auditorías y DPP</h1>
-            <p className="text-gray-600">Gestión de auditorías y pasaportes digitales de productos</p>
+            <p className="text-gray-600">Gestión de auditorías y cumplimiento del Pasaporte Digital de Producto</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setCurrentView("dpp")}>
-              <QrCode className="w-4 h-4 mr-2" />
-              Ver DPPs
-            </Button>
-            <Button>
-              <Shield className="w-4 h-4 mr-2" />
-              Nueva Auditoría
-            </Button>
-          </div>
+          <Button>
+            <Shield className="w-4 h-4 mr-2" />
+            Nueva Auditoría
+          </Button>
         </div>
 
-        {/* Search */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                placeholder="Buscar por producto, auditor o código..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* DPP Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Shield className="w-8 h-8 text-blue-500" />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold">{auditorias.length}</p>
-                  <p className="text-sm text-gray-600">Total Auditorías</p>
+                  <p className="text-sm font-medium text-gray-600">Productos Registrados</p>
+                  <p className="text-2xl font-bold text-gray-900">{dppMetrics.total_products}</p>
                 </div>
+                <Package className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-8 h-8 text-green-500" />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold">{auditorias.filter((a) => a.estado === "Aprobada").length}</p>
-                  <p className="text-sm text-gray-600">Aprobadas</p>
+                  <p className="text-sm font-medium text-gray-600">Cumplimiento DPP</p>
+                  <p className="text-2xl font-bold text-green-600">{dppMetrics.compliance_rate}%</p>
                 </div>
+                <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Clock className="w-8 h-8 text-yellow-500" />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold">{auditorias.filter((a) => a.estado === "En Proceso").length}</p>
-                  <p className="text-sm text-gray-600">En Proceso</p>
+                  <p className="text-sm font-medium text-gray-600">Completitud Promedio</p>
+                  <p className="text-2xl font-bold text-purple-600">{dppMetrics.avg_completeness}%</p>
                 </div>
+                <BarChart3 className="w-8 h-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <QrCode className="w-8 h-8 text-purple-500" />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold">{dpps.length}</p>
-                  <p className="text-sm text-gray-600">DPPs Generados</p>
+                  <p className="text-sm font-medium text-gray-600">Auditorías Pendientes</p>
+                  <p className="text-2xl font-bold text-orange-600">{dppMetrics.pending_audits}</p>
                 </div>
+                <Clock className="w-8 h-8 text-orange-600" />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Auditorias Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Lista de Auditorías</CardTitle>
-            <CardDescription>{filteredAuditorias.length} auditorías encontradas</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Producto</TableHead>
-                  <TableHead>Auditor</TableHead>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Resultado</TableHead>
-                  <TableHead>Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredAuditorias.map((auditoria) => (
-                  <TableRow key={auditoria.id}>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{auditoria.producto_codigo}</p>
-                        <p className="text-sm text-gray-600">{auditoria.producto_nombre}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>{auditoria.auditor}</TableCell>
-                    <TableCell>{auditoria.fecha}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(auditoria.estado)}
-                        {getStatusBadge(auditoria.estado)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate">{auditoria.resultado}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedAudit(auditoria.id)
-                            setCurrentView("detalle")
-                          }}
-                        >
-                          <Eye className="w-4 h-4 mr-1" />
-                          Ver
-                        </Button>
-                        {auditoria.estado === "Aprobada" && (
-                          <Button variant="outline" size="sm">
-                            <QrCode className="w-4 h-4 mr-1" />
-                            DPP
+        {/* Main Content */}
+        <Tabs defaultValue="audits" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="audits">Auditorías</TabsTrigger>
+            <TabsTrigger value="certifications">Certificaciones</TabsTrigger>
+            <TabsTrigger value="compliance">Cumplimiento DPP</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="audits" className="space-y-6">
+            {/* Filters */}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Input
+                      placeholder="Buscar por producto, artesana o ID..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-full md:w-48">
+                      <SelectValue placeholder="Filtrar por estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos los estados</SelectItem>
+                      <SelectItem value="completado">Completado</SelectItem>
+                      <SelectItem value="proceso">En Proceso</SelectItem>
+                      <SelectItem value="programado">Programado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button variant="outline">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Más Filtros
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Audits List */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Lista de Auditorías</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {filteredAudits.map((audit) => {
+                    const StatusIcon = getStatusIcon(audit.status)
+                    return (
+                      <div
+                        key={audit.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => setSelectedAudit(audit.id)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <Shield className="w-6 h-6 text-gray-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-900">{audit.product_name}</h4>
+                            <p className="text-sm text-gray-600">ID: {audit.id}</p>
+                            <div className="flex items-center gap-4 mt-1">
+                              <div className="flex items-center gap-1 text-xs text-gray-500">
+                                <User className="w-3 h-3" />
+                                {audit.artisan}
+                              </div>
+                              <div className="flex items-center gap-1 text-xs text-gray-500">
+                                <Shield className="w-3 h-3" />
+                                {audit.audit_type}
+                              </div>
+                              <div className="flex items-center gap-1 text-xs text-gray-500">
+                                <Calendar className="w-3 h-3" />
+                                {audit.date}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                          <div className="text-center">
+                            <p className="text-sm font-medium text-gray-900">{audit.auditor}</p>
+                            <p className="text-xs text-gray-500">Auditor</p>
+                          </div>
+                          {audit.score && (
+                            <div className="text-center">
+                              <p className="text-sm font-medium text-green-600">{audit.score}/100</p>
+                              <p className="text-xs text-gray-500">Puntuación</p>
+                            </div>
+                          )}
+                          <Badge className={getStatusColor(audit.status)}>
+                            <StatusIcon className="w-3 h-3 mr-1" />
+                            {audit.status}
+                          </Badge>
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
                           </Button>
-                        )}
+                        </div>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="certifications" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Certificaciones por Tipo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {certificationTypes.map((cert, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Award className="w-6 h-6 text-blue-600" />
+                        <div>
+                          <h4 className="font-medium text-gray-900">{cert.name}</h4>
+                          <p className="text-sm text-gray-600">{cert.count} productos certificados</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-green-600">{cert.compliance}%</p>
+                        <p className="text-xs text-gray-500">Cumplimiento</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="compliance" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Métricas de Cumplimiento DPP</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Completitud Promedio</span>
+                        <span className="text-sm text-gray-600">{dppMetrics.avg_completeness}%</span>
+                      </div>
+                      <Progress value={dppMetrics.avg_completeness} className="h-3" />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Precisión Promedio</span>
+                        <span className="text-sm text-gray-600">{dppMetrics.avg_accuracy}%</span>
+                      </div>
+                      <Progress value={dppMetrics.avg_accuracy} className="h-3" />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-gray-900">Transparencia Promedio</span>
+                        <span className="text-sm text-gray-600">{dppMetrics.avg_transparency}%</span>
+                      </div>
+                      <Progress value={dppMetrics.avg_transparency} className="h-3" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Estado de Cumplimiento</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="w-6 h-6 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-900">Productos Conformes</p>
+                          <p className="text-sm text-green-700">{dppMetrics.compliant_products} productos</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-green-600">{dppMetrics.compliance_rate}%</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Clock className="w-6 h-6 text-yellow-600" />
+                        <div>
+                          <p className="font-medium text-yellow-900">En Proceso</p>
+                          <p className="text-sm text-yellow-700">
+                            {dppMetrics.total_products - dppMetrics.compliant_products} productos
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-yellow-600">{100 - dppMetrics.compliance_rate}%</span>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Próximas Regulaciones</h4>
+                      <p className="text-sm text-blue-800">
+                        La regulación DPP de la UE entrará en vigor en 2025. Nuestro sistema ya cumple con el 95% de los
+                        requisitos.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )
