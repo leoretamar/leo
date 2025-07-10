@@ -19,7 +19,7 @@ export default function Page() {
         <div className="border-b bg-white">
           <div className="max-w-7xl mx-auto">
             <TabsList className="grid w-full grid-cols-12 h-12">
-              <TabsTrigger value="customer-dashboard">Dashboard Cliente</TabsTrigger>
+              <TabsTrigger value="customer-dashboard">Cliente</TabsTrigger>
         <TabsTrigger value="backoffice-dashboard">Backoffice</TabsTrigger>
               <TabsTrigger value="modern-dashboard">Dashboard Moderno</TabsTrigger>
               <TabsTrigger value="mobile">App Móvil</TabsTrigger>
