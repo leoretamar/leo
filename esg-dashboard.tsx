@@ -1,128 +1,146 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  BarChart3,
-  Download,
-  Filter,
-  TrendingUp,
-  TrendingDown,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts"
+import {
   Leaf,
   Users,
   Shield,
+  Download,
+  Calendar,
+  Award,
+  Globe,
   Recycle,
+  TreePine,
+  Droplets,
   Building,
+  FileText,
+  BarChart3,
+  CheckCircle,
+  ArrowUpRight,
 } from "lucide-react"
 
-interface MetricaESG {
-  categoria: "Environmental" | "Social" | "Governance"
-  indicador: string
-  valor: number
-  unidad: string
-  tendencia: "up" | "down" | "stable"
-  meta: number
-}
-
 export default function ESGDashboard() {
-  const [filtroFecha, setFiltroFecha] = useState("ultimo-mes")
-  const [filtroColeccion, setFiltroColeccion] = useState("todas")
-  const [filtroProveedor, setFiltroProveedor] = useState("todos")
+  const [selectedPeriod, setSelectedPeriod] = useState("2024")
+  const [selectedMetric, setSelectedMetric] = useState("overview")
 
-  const metricas: MetricaESG[] = [
-    {
-      categoria: "Environmental",
-      indicador: "Emisiones CO₂",
-      valor: 2.3,
-      unidad: "kg CO₂e/producto",
-      tendencia: "down",
-      meta: 2.0,
-    },
-    {
-      categoria: "Environmental",
-      indicador: "Consumo de Agua",
-      valor: 125,
-      unidad: "L/producto",
-      tendencia: "down",
-      meta: 100,
-    },
-    {
-      categoria: "Environmental",
-      indicador: "Material Reciclado",
-      valor: 87,
-      unidad: "%",
-      tendencia: "up",
-      meta: 90,
-    },
-    {
-      categoria: "Social",
-      indicador: "Artesanos Beneficiados",
-      valor: 127,
-      unidad: "personas",
-      tendencia: "up",
-      meta: 150,
-    },
-    {
-      categoria: "Social",
-      indicador: "Salario Justo",
-      valor: 95,
-      unidad: "% sobre mínimo",
-      tendencia: "stable",
-      meta: 100,
-    },
-    {
-      categoria: "Governance",
-      indicador: "Transparencia",
-      valor: 92,
-      unidad: "% trazabilidad",
-      tendencia: "up",
-      meta: 95,
-    },
+  // ESG Data
+  const esgScores = {
+    environmental: 87,
+    social: 92,
+    governance: 85,
+    overall: 88
+  }
+
+  const environmentalData = [
+    { month: "Ene", co2_reduction: 120, water_saved: 2400, waste_diverted: 85 },
+    { month: "Feb", co2_reduction: 140, water_saved: 2800, waste_diverted: 92 },
+    { month: "Mar", co2_reduction: 130, water_saved: 2600, waste_diverted: 88 },
+    { month: "Abr", co2_reduction: 165, water_saved: 3200, waste_diverted: 95 },
+    { month: "May", co2_reduction: 150, water_saved: 3000, waste_diverted: 90 },
+    { month: "Jun", co2_reduction: 180, water_saved: 3600, waste_diverted: 98 },
   ]
 
-  const proveedores = [
-    { nombre: "Lanas del Sur", productos: 45, certificaciones: ["RWS", "GOTS"], score_esg: 8.5 },
-    { nombre: "Maderas Eco", productos: 23, certificaciones: ["FSC"], score_esg: 7.8 },
-    { nombre: "Curtidos XYZ", productos: 18, certificaciones: ["LWG"], score_esg: 8.2 },
-    { nombre: "Hilos LaRosa", productos: 31, certificaciones: ["OEKO-TEX"], score_esg: 7.9 },
+  const socialImpactData = [
+    { category: "Artesanas Empleadas", value: 89, target: 100 },
+    { category: "Comunidades Impactadas", value: 12, target: 15 },
+    { category: "Programas de Capacitación", value: 8, target: 10 },
+    { category: "Beneficiarios Directos", value: 340, target: 400 },
   ]
 
-  const getTendenciaIcon = (tendencia: string) => {
-    switch (tendencia) {
-      case "up":
-        return <TrendingUp className="w-4 h-4 text-green-500" />
-      case "down":
-        return <TrendingDown className="w-4 h-4 text-red-500" />
-      default:
-        return <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
+  const sustainabilityGoals = [
+    {
+      id: 1,
+      title: "Neutralidad de Carbono",
+      description: "Alcanzar neutralidad de carbono en toda la cadena de suministro",
+      progress: 78,
+      target_date: "2025",
+      status: "En Progreso",
+      icon: Leaf
+    },
+    {
+      id: 2,
+      title: "Economía Circular",
+      description: "100% de productos con diseño circular",
+      progress: 92,
+      target_date: "2024",
+      status: "Casi Completado",
+      icon: Recycle
+    },
+    {
+      id: 3,
+      title: "Impacto Social",
+      description: "Beneficiar a 500 artesanas y sus familias",
+      progress: 68,
+      target_date: "2025",
+      status: "En Progreso",
+      icon: Users
+    },
+    {
+      id: 4,
+      title: "Transparencia Total",
+      description: "Trazabilidad completa en 100% de productos",
+      progress: 95,
+      target_date: "2024",
+      status: "Casi Completado",
+      icon: Shield
+    }
+  ]
+
+  const certifications = [
+    { name: "B Corp Certification", status: "Certificado", date: "2023", score: "95/100" },
+    { name: "Fair Trade", status: "Certificado", date: "2023", score: "Excelente" },
+    { name: "GOTS", status: "Certificado", date: "2024", score: "A+" },
+    { name: "Carbon Trust", status: "En Proceso", date: "2024", score: "Pendiente" },
+  ]
+
+  const impactMetrics = {
+    environmental: {
+      co2_avoided: 2845,
+      water_saved: 18420,
+      waste_diverted: 567,
+      renewable_energy: 85
+    },
+    social: {
+      artisans_supported: 89,
+      communities: 12,
+      jobs_created: 156,
+      training_hours: 2340
+    },
+    economic: {
+      fair_trade_premium: 45000,
+      local_investment: 120000,
+      artisan_income_increase: 35,
+      supply_chain_transparency: 98
     }
   }
 
-  const getCategoriaIcon = (categoria: string) => {
-    switch (categoria) {
-      case "Environmental":
-        return <Leaf className="w-5 h-5 text-green-600" />
-      case "Social":
-        return <Users className="w-5 h-5 text-blue-600" />
-      case "Governance":
-        return <Shield className="w-5 h-5 text-purple-600" />
-      default:
-        return null
-    }
-  }
-
-  const getCategoriaColor = (categoria: string) => {
-    switch (categoria) {
-      case "Environmental":
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completado":
+      case "Certificado":
+      case "Casi Completado":
         return "bg-green-100 text-green-800"
-      case "Social":
+      case "En Progreso":
+        return "bg-yellow-100 text-yellow-800"
+      case "En Proceso":
         return "bg-blue-100 text-blue-800"
-      case "Governance":
-        return "bg-purple-100 text-purple-800"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -130,239 +148,412 @@ export default function ESGDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard ESG y Circularidad</h1>
-            <p className="text-gray-600">Métricas de sostenibilidad ambiental, social y gobernanza</p>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard ESG</h1>
+            <p className="text-gray-600">Environmental, Social & Governance Impact</p>
           </div>
-          <Button>
-            <Download className="w-4 h-4 mr-2" />
-            Descargar Reporte PDF
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button variant="outline">
+              <Calendar className="w-4 h-4 mr-2" />
+              {selectedPeriod}
+            </Button>
+            <Button>
+              <Download className="w-4 h-4 mr-2" />
+              Reporte ESG
+            </Button>
+          </div>
         </div>
 
-        {/* Filters */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
-              <Filter className="w-5 h-5 text-gray-400" />
-              <div className="flex gap-4">
-                <Select value={filtroFecha} onValueChange={setFiltroFecha}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ultimo-mes">Último mes</SelectItem>
-                    <SelectItem value="ultimo-trimestre">Último trimestre</SelectItem>
-                    <SelectItem value="ultimo-ano">Último año</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={filtroColeccion} onValueChange={setFiltroColeccion}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todas las colecciones</SelectItem>
-                    <SelectItem value="sol-campo">Sol de Campo</SelectItem>
-                    <SelectItem value="origen-campo">Origen de Campo</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={filtroProveedor} onValueChange={setFiltroProveedor}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todos los proveedores</SelectItem>
-                    <SelectItem value="lanas-sur">Lanas del Sur</SelectItem>
-                    <SelectItem value="maderas-eco">Maderas Eco</SelectItem>
-                  </SelectContent>
-                </Select>
+        {/* ESG Score Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Leaf className="w-8 h-8 text-green-600" />
+                <Badge className="bg-green-100 text-green-800">Excelente</Badge>
               </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Environmental</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-green-600">{esgScores.environmental}</span>
+                <span className="text-sm text-green-600 mb-1">/100</span>
+              </div>
+              <Progress value={esgScores.environmental} className="h-2 mt-2" />
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Users className="w-8 h-8 text-blue-600" />
+                <Badge className="bg-blue-100 text-blue-800">Excelente</Badge>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Social</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-blue-600">{esgScores.social}</span>
+                <span className="text-sm text-blue-600 mb-1">/100</span>
+              </div>
+              <Progress value={esgScores.social} className="h-2 mt-2" />
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Shield className="w-8 h-8 text-purple-600" />
+                <Badge className="bg-purple-100 text-purple-800">Muy Bueno</Badge>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Governance</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-purple-600">{esgScores.governance}</span>
+                <span className="text-sm text-purple-600 mb-1">/100</span>
+              </div>
+              <Progress value={esgScores.governance} className="h-2 mt-2" />
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Award className="w-8 h-8 text-amber-600" />
+                <Badge className="bg-amber-100 text-amber-800">Excelente</Badge>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Puntuación General</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-amber-600">{esgScores.overall}</span>
+                <span className="text-sm text-amber-600 mb-1">/100</span>
+              </div>
+              <Progress value={esgScores.overall} className="h-2 mt-2" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="environmental" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="environmental">Ambiental</TabsTrigger>
+            <TabsTrigger value="social">Social</TabsTrigger>
+            <TabsTrigger value="governance">Gobernanza</TabsTrigger>
+            <TabsTrigger value="goals">Objetivos</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="environmental" className="space-y-6">
+            {/* Environmental KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">CO₂ Evitado</p>
+                      <p className="text-2xl font-bold text-green-600">{impactMetrics.environmental.co2_avoided}kg</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+18% vs año anterior</span>
+                      </div>
+                    </div>
+                    <Leaf className="w-8 h-8 text-green-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Agua Conservada</p>
+                      <p className="text-2xl font-bold text-blue-600">{impactMetrics.environmental.water_saved.toLocaleString()}L</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+22% vs año anterior</span>
+                      </div>
+                    </div>
+                    <Droplets className="w-8 h-8 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Residuos Desviados</p>
+                      <p className="text-2xl font-bold text-orange-600">{impactMetrics.environmental.waste_diverted}kg</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+15% vs año anterior</span>
+                      </div>
+                    </div>
+                    <Recycle className="w-8 h-8 text-orange-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Energía Renovable</p>
+                      <p className="text-2xl font-bold text-purple-600">{impactMetrics.environmental.renewable_energy}%</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+5% vs año anterior</span>
+                      </div>
+                    </div>
+                    <TreePine className="w-8 h-8 text-purple-600" />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Leaf className="w-8 h-8 text-green-500" />
-                <div>
-                  <p className="text-2xl font-bold">8.2</p>
-                  <p className="text-sm text-gray-600">Score ESG Global</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            {/* Environmental Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Impacto Ambiental Mensual</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={environmentalData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="co2_reduction" stroke="#10b981" strokeWidth={2} name="CO₂ Reducido (kg)" />
+                      <Line type="monotone" dataKey="water_saved" stroke="#3b82f6" strokeWidth={2} name="Agua Ahorrada (L)" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Recycle className="w-8 h-8 text-purple-500" />
-                <div>
-                  <p className="text-2xl font-bold">87%</p>
-                  <p className="text-sm text-gray-600">Circularidad Promedio</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-8 h-8 text-blue-500" />
-                <div>
-                  <p className="text-2xl font-bold">+15%</p>
-                  <p className="text-sm text-gray-600">Mejora vs Mes Anterior</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* ESG Metrics Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Métricas ESG Detalladas
-            </CardTitle>
-            <CardDescription>Indicadores clave de sostenibilidad por categoría</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Categoría</TableHead>
-                  <TableHead>Indicador</TableHead>
-                  <TableHead>Valor Actual</TableHead>
-                  <TableHead>Meta</TableHead>
-                  <TableHead>Tendencia</TableHead>
-                  <TableHead>Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {metricas.map((metrica, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {getCategoriaIcon(metrica.categoria)}
-                        <Badge className={getCategoriaColor(metrica.categoria)}>{metrica.categoria}</Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">{metrica.indicador}</TableCell>
-                    <TableCell>
-                      {metrica.valor} {metrica.unidad}
-                    </TableCell>
-                    <TableCell className="text-gray-600">
-                      {metrica.meta} {metrica.unidad}
-                    </TableCell>
-                    <TableCell>{getTendenciaIcon(metrica.tendencia)}</TableCell>
-                    <TableCell>
-                      {metrica.valor >= metrica.meta ? (
-                        <Badge className="bg-green-100 text-green-800">Cumplido</Badge>
-                      ) : (
-                        <Badge className="bg-yellow-100 text-yellow-800">En progreso</Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Evolución Emisiones CO₂</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
-                <p className="text-gray-500">Gráfico de línea temporal</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribución por Categoría ESG</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
-                <p className="text-gray-500">Gráfico circular ESG</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Suppliers Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building className="w-5 h-5" />
-              Evaluación de Proveedores
-            </CardTitle>
-            <CardDescription>Score ESG y certificaciones por proveedor</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Proveedor</TableHead>
-                  <TableHead>Productos</TableHead>
-                  <TableHead>Certificaciones</TableHead>
-                  <TableHead>Score ESG</TableHead>
-                  <TableHead>Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {proveedores.map((proveedor, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{proveedor.nombre}</TableCell>
-                    <TableCell>{proveedor.productos}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        {proveedor.certificaciones.map((cert, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">
-                            {cert}
-                          </Badge>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Distribución de Impacto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Reducción CO₂", value: 45, color: "#10b981" },
+                          { name: "Conservación Agua", value: 35, color: "#3b82f6" },
+                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {[
+                          { name: "Reducción CO₂", value: 45, color: "#10b981" },
+                          { name: "Conservación Agua", value: 35, color: "#3b82f6" },
+                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" }
+                        ].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="social" className="space-y-6">
+            {/* Social KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Artesanas Apoyadas</p>
+                      <p className="text-2xl font-bold text-blue-600">{impactMetrics.social.artisans_supported}</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+12% vs año anterior</span>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{proveedor.score_esg}</span>
-                        <div className="w-16 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-green-500 h-2 rounded-full"
-                            style={{ width: `${(proveedor.score_esg / 10) * 100}%` }}
-                          ></div>
+                    </div>
+                    <Users className="w-8 h-8 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Comunidades</p>
+                      <p className="text-2xl font-bold text-green-600">{impactMetrics.social.communities}</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+3 nuevas</span>
+                      </div>
+                    </div>
+                    <Globe className="w-8 h-8 text-green-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Empleos Creados</p>
+                      <p className="text-2xl font-bold text-purple-600">{impactMetrics.social.jobs_created}</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+25% vs año anterior</span>
+                      </div>
+                    </div>
+                    <Building className="w-8 h-8 text-purple-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Horas de Capacitación</p>
+                      <p className="text-2xl font-bold text-orange-600">{impactMetrics.social.training_hours.toLocaleString()}</p>
+                      <div className="flex items-center mt-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm text-green-600">+30% vs año anterior</span>
+                      </div>
+                    </div>
+                    <Award className="w-8 h-8 text-orange-600" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Social Impact Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Progreso de Impacto Social</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {socialImpactData.map((item, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-gray-900">{item.category}</span>
+                        <span className="text-sm text-gray-600">{item.value} / {item.target}</span>
+                      </div>
+                      <Progress value={(item.value / item.target) * 100} className="h-3" />
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>Actual: {item.value}</span>
+                        <span>Meta: {item.target}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="governance" className="space-y-6">
+            {/* Governance Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Certificaciones y Estándares</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {certifications.map((cert, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium text-gray-900">{cert.name}</h4>
+                          <p className="text-sm text-gray-600">Obtenido en {cert.date}</p>
+                        </div>
+                        <div className="text-right">
+                          <Badge className={getStatusColor(cert.status)}>
+                            {cert.status}
+                          </Badge>
+                          <p className="text-sm text-gray-600 mt-1">{cert.score}</p>
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      {proveedor.score_esg >= 8 ? (
-                        <Badge className="bg-green-100 text-green-800">Excelente</Badge>
-                      ) : proveedor.score_esg >= 7 ? (
-                        <Badge className="bg-yellow-100 text-yellow-800">Bueno</Badge>
-                      ) : (
-                        <Badge className="bg-red-100 text-red-800">Mejorar</Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  )
-}
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Transparencia y Reportes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileText className="w-6 h-6 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-900">Reporte Anual ESG</p>
+                          <p className="text-sm text-green-700">Publicado mensualmente</p>
+                        </div>
+                      </div>
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <BarChart3 className="w-6 h-6 text-blue-600" />
+                        <div>
+                          <p className="font-medium text-blue-900">Auditoría Externa</p>
+                          <p className="text-sm text-blue-700">Realizada anualmente</p>
+                        </div>
+                      </div>
+                      <CheckCircle className="w-6 h-6 text-blue-600" />
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Shield className="w-6 h-6 text-purple-600" />
+                        <div>
+                          <p className="font-medium text-purple-900">Compliance</p>
+                          <p className="text-sm text-purple-700">100% cumplimiento</p>
+                        </div>
+                      </div>
+                      <CheckCircle className="w-6 h-6 text-purple-600" />
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Globe className="w-6 h-6 text-orange-600" />
+                        <div>
+                          <p className="font-medium text-orange-900">Trazabilidad</p>
+                          <p className="text-sm text-orange-700">98% de productos trazados</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-orange-100 text-orange-800">98%</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="goals" className="space-y-6">
+            {/* Sustainability Goals */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {sustainabilityGoals.map((goal) => (
+                <Card key={goal.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <goal.icon className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold text-gray-900">{goal.title}</h3>
+                          <Badge className={getStatusColor(goal.status)}>
+                            {goal.status}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-4">{goal.description}</p>
+                        <div className="space-y-2">
+                          <div className\
