@@ -1,410 +1,510 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts"
 import {
   Package,
-  Leaf,
-  BarChart3,
-  Shield,
-  Gift,
-  BookOpen,
-  QrCode,
-  MapPin,
   Users,
   TrendingUp,
-  AlertCircle,
-  CheckCircle,
+  Leaf,
+  Recycle,
+  QrCode,
+  Search,
+  Filter,
+  Download,
+  RefreshCw,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  ArrowUpRight,
+  Calendar,
 } from "lucide-react"
 
-export default function GIATraceabilityDashboard() {
-  const [selectedProduct, setSelectedProduct] = useState("merino-cardigan-001")
+export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState("overview")
 
-  const modules = [
-    {
-      id: "traceability",
-      name: "Trazabilidad Core",
-      icon: Package,
-      description: "Registro y seguimiento de productos",
-      status: "active",
-      color: "bg-blue-500",
-    },
-    {
-      id: "ecodesign",
-      name: "Ecodiseño",
-      icon: Leaf,
-      description: "Simulación de impacto ambiental",
-      status: "active",
-      color: "bg-green-500",
-    },
-    {
-      id: "esg",
-      name: "ESG y Circularidad",
-      icon: BarChart3,
-      description: "Métricas de sostenibilidad",
-      status: "active",
-      color: "bg-purple-500",
-    },
-    {
-      id: "audit",
-      name: "Auditoría y DPP",
-      icon: Shield,
-      description: "Pasaporte Digital del Producto",
-      status: "active",
-      color: "bg-orange-500",
-    },
-    {
-      id: "epr",
-      name: "EPR Recompensas",
-      icon: Gift,
-      description: "Gestión de devoluciones",
-      status: "development",
-      color: "bg-yellow-500",
-    },
-    {
-      id: "storytelling",
-      name: "Storytelling IA",
-      icon: BookOpen,
-      description: "Narrativas digitales",
-      status: "development",
-      color: "bg-pink-500",
-    },
+  // Sample data
+  const productionData = [
+    { month: "Ene", productos: 45, co2_ahorrado: 120 },
+    { month: "Feb", productos: 52, co2_ahorrado: 140 },
+    { month: "Mar", productos: 48, co2_ahorrado: 130 },
+    { month: "Abr", productos: 61, co2_ahorrado: 165 },
+    { month: "May", productos: 55, co2_ahorrado: 150 },
+    { month: "Jun", productos: 67, co2_ahorrado: 180 },
   ]
 
-  const products = [
+  const impactData = [
+    { name: "CO₂ Reducido", value: 1250, color: "#10b981" },
+    { name: "Agua Ahorrada", value: 3400, color: "#3b82f6" },
+    { name: "Residuos Evitados", value: 890, color: "#f59e0b" },
+  ]
+
+  const recentProducts = [
     {
-      id: "merino-cardigan-001",
-      name: "Cardigan Lana Merino",
-      type: "Prenda Tejida",
-      status: "En Producción",
-      progress: 75,
-      location: "Taller Artesanal - Cusco",
-      blockchain: "0x1a2b3c...",
-      esgScore: 8.5,
-    },
-    {
-      id: "leather-bag-002",
-      name: "Bolso Cuero Natural",
-      type: "Accesorio Cuero",
+      id: "PRD-001",
+      name: "Sweater Artesanal",
+      artisan: "María González",
       status: "Completado",
-      progress: 100,
-      location: "Taller Cuero - Arequipa",
-      blockchain: "0x4d5e6f...",
-      esgScore: 7.8,
+      date: "2024-01-15",
+      impact: { co2: 2.3, water: 45 },
+    },
+    {
+      id: "PRD-002",
+      name: "Cardigan Orgánico",
+      artisan: "Ana Rodríguez",
+      status: "En Proceso",
+      date: "2024-01-14",
+      impact: { co2: 1.8, water: 32 },
+    },
+    {
+      id: "PRD-003",
+      name: "Poncho Tradicional",
+      artisan: "Carmen Silva",
+      status: "Completado",
+      date: "2024-01-13",
+      impact: { co2: 3.1, water: 58 },
     },
   ]
-
-  const currentProduct = products.find((p) => p.id === selectedProduct)
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">GIA Trazabilidad</h1>
-            <p className="text-gray-600">Sistema integral de trazabilidad y sostenibilidad</p>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard Principal</h1>
+            <p className="text-gray-600">Sistema de Trazabilidad GIA</p>
           </div>
           <div className="flex items-center gap-4">
-            <Badge variant="outline" className="text-green-600 border-green-600">
-              <CheckCircle className="w-4 h-4 mr-1" />
-              Blockchain Activo
-            </Badge>
-            <Button>
-              <QrCode className="w-4 h-4 mr-2" />
-              Generar QR
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Exportar
+            </Button>
+            <Button variant="outline" size="sm">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Actualizar
+            </Button>
+            <Button size="sm">
+              <Plus className="w-4 h-4 mr-2" />
+              Nuevo Producto
             </Button>
           </div>
         </div>
 
-        {/* Modules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {modules.map((module) => {
-            const IconComponent = module.icon
-            return (
-              <Card key={module.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className={`p-2 rounded-lg ${module.color} text-white`}>
-                      <IconComponent className="w-5 h-5" />
-                    </div>
-                    <Badge variant={module.status === "active" ? "default" : "secondary"}>
-                      {module.status === "active" ? "Activo" : "En Desarrollo"}
-                    </Badge>
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Productos Registrados</p>
+                  <p className="text-2xl font-bold text-gray-900">1,247</p>
+                  <div className="flex items-center mt-2">
+                    <ArrowUpRight className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-green-600">+12% vs mes anterior</span>
                   </div>
-                  <CardTitle className="text-lg">{module.name}</CardTitle>
-                  <CardDescription>{module.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            )
-          })}
+                </div>
+                <Package className="w-8 h-8 text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Artesanas Activas</p>
+                  <p className="text-2xl font-bold text-gray-900">89</p>
+                  <div className="flex items-center mt-2">
+                    <ArrowUpRight className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-green-600">+5% vs mes anterior</span>
+                  </div>
+                </div>
+                <Users className="w-8 h-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">CO₂ Ahorrado (kg)</p>
+                  <p className="text-2xl font-bold text-gray-900">2,845</p>
+                  <div className="flex items-center mt-2">
+                    <ArrowUpRight className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-green-600">+18% vs mes anterior</span>
+                  </div>
+                </div>
+                <Leaf className="w-8 h-8 text-emerald-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Escaneos QR</p>
+                  <p className="text-2xl font-bold text-gray-900">15,632</p>
+                  <div className="flex items-center mt-2">
+                    <ArrowUpRight className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-green-600">+24% vs mes anterior</span>
+                  </div>
+                </div>
+                <QrCode className="w-8 h-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Product Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="w-5 h-5" />
-                Productos Activos
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                    selectedProduct === product.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                  onClick={() => setSelectedProduct(product.id)}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{product.name}</h4>
-                    <Badge variant="outline">{product.type}</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      {product.location}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Progreso</span>
-                      <span className="text-sm font-medium">{product.progress}%</span>
-                    </div>
-                    <Progress value={product.progress} className="h-2" />
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Resumen</TabsTrigger>
+            <TabsTrigger value="products">Productos</TabsTrigger>
+            <TabsTrigger value="impact">Impacto</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
 
-          {/* Product Details */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>Detalles del Producto</CardTitle>
-              <CardDescription>
-                {currentProduct?.name} - {currentProduct?.type}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="traceability" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="traceability">Trazabilidad</TabsTrigger>
-                  <TabsTrigger value="esg">ESG</TabsTrigger>
-                  <TabsTrigger value="dpp">DPP</TabsTrigger>
-                  <TabsTrigger value="blockchain">Blockchain</TabsTrigger>
-                </TabsList>
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Production Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Producción Mensual</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={productionData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="productos" fill="#3b82f6" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-                <TabsContent value="traceability" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Estado Actual</label>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <span>{currentProduct?.status}</span>
+              {/* Impact Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Impacto Ambiental</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={productionData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="co2_ahorrado" stroke="#10b981" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Products */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Productos Recientes</CardTitle>
+                <Button variant="outline" size="sm">
+                  Ver Todos
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentProducts.map((product) => (
+                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <Package className="w-6 h-6 text-gray-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">{product.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {product.artisan} • {product.date}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Ubicación</label>
-                      <p className="text-sm text-gray-600">{currentProduct?.location}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-medium">Historial de Eventos</h4>
-                    <div className="space-y-2">
-                      {[
-                        { date: "2024-01-15", event: "Recepción materia prima", status: "completed" },
-                        { date: "2024-01-20", event: "Inicio proceso de tejido", status: "completed" },
-                        { date: "2024-01-25", event: "Control de calidad", status: "completed" },
-                        { date: "2024-01-30", event: "Acabado final", status: "in-progress" },
-                        { date: "2024-02-05", event: "Empaque y etiquetado", status: "pending" },
-                      ].map((event, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 rounded border">
-                          <div
-                            className={`w-2 h-2 rounded-full ${
-                              event.status === "completed"
-                                ? "bg-green-500"
-                                : event.status === "in-progress"
-                                  ? "bg-yellow-500"
-                                  : "bg-gray-300"
-                            }`}
-                          ></div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{event.event}</p>
-                            <p className="text-xs text-gray-500">{event.date}</p>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <div className="flex items-center gap-1 text-sm text-green-600">
+                            <Leaf className="w-3 h-3" />
+                            {product.impact.co2}kg CO₂
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-blue-600">
+                            <span>💧</span>
+                            {product.impact.water}L agua
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="esg" className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-green-600">{currentProduct?.esgScore}</div>
-                        <div className="text-sm text-gray-600">Score ESG</div>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-blue-600">85%</div>
-                        <div className="text-sm text-gray-600">Circularidad</div>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-purple-600">2.1kg</div>
-                        <div className="text-sm text-gray-600">CO₂ Evitado</div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-medium">Métricas Ambientales</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Consumo de Agua</span>
-                        <span className="text-sm font-medium">15L (-30% vs promedio)</span>
+                        <Badge
+                          variant={product.status === "Completado" ? "default" : "secondary"}
+                          className={
+                            product.status === "Completado"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {product.status}
+                        </Badge>
+                        <div className="flex gap-2">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <Progress value={70} className="h-2" />
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Energía Renovable</span>
-                        <span className="text-sm font-medium">90%</span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="products" className="space-y-6">
+            {/* Products Management */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestión de Productos</CardTitle>
+                <div className="flex items-center gap-4">
+                  <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Buscar productos..."
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full"
+                    />
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filtros
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentProducts.map((product) => (
+                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <Package className="w-8 h-8 text-gray-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">{product.name}</h4>
+                          <p className="text-sm text-gray-600">ID: {product.id}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Users className="w-3 h-3 text-gray-400" />
+                            <span className="text-xs text-gray-600">{product.artisan}</span>
+                            <Calendar className="w-3 h-3 text-gray-400 ml-2" />
+                            <span className="text-xs text-gray-600">{product.date}</span>
+                          </div>
+                        </div>
                       </div>
-                      <Progress value={90} className="h-2" />
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <div className="flex items-center gap-1 text-sm text-green-600">
+                            <Leaf className="w-3 h-3" />
+                            {product.impact.co2}kg CO₂
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-blue-600">
+                            <span>💧</span>
+                            {product.impact.water}L agua
+                          </div>
+                        </div>
+                        <Badge
+                          variant={product.status === "Completado" ? "default" : "secondary"}
+                          className={
+                            product.status === "Completado"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {product.status}
+                        </Badge>
+                        <div className="flex gap-2">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="impact" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Impact Pie Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Distribución de Impacto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={impactData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {impactData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Impact Metrics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Métricas de Sostenibilidad</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Leaf className="w-8 h-8 text-green-600" />
+                      <div>
+                        <p className="font-medium text-green-900">Reducción de CO₂</p>
+                        <p className="text-sm text-green-700">vs. producción convencional</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-green-600">2,845kg</p>
+                      <p className="text-sm text-green-600">+18% este mes</p>
                     </div>
                   </div>
-                </TabsContent>
 
-                <TabsContent value="dpp" className="space-y-4">
-                  <div className="text-center space-y-4">
-                    <div className="w-32 h-32 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
-                      <QrCode className="w-16 h-16 text-gray-400" />
+                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">💧</span>
+                      <div>
+                        <p className="font-medium text-blue-900">Agua Conservada</p>
+                        <p className="text-sm text-blue-700">en procesos de producción</p>
+                      </div>
                     </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-blue-600">15,420L</p>
+                      <p className="text-sm text-blue-600">+22% este mes</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Recycle className="w-8 h-8 text-purple-600" />
+                      <div>
+                        <p className="font-medium text-purple-900">Materiales Reciclados</p>
+                        <p className="text-sm text-purple-700">incorporados en productos</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-purple-600">67%</p>
+                      <p className="text-sm text-purple-600">promedio</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
+            {/* Analytics Dashboard */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium">Pasaporte Digital del Producto</h4>
-                      <p className="text-sm text-gray-600">Código QR para acceso público</p>
+                      <p className="text-sm font-medium text-gray-600">Escaneos QR Hoy</p>
+                      <p className="text-2xl font-bold text-gray-900">342</p>
                     </div>
-                    <Button className="w-full">Generar DPP Actualizado</Button>
+                    <QrCode className="w-8 h-8 text-blue-600" />
                   </div>
+                </CardContent>
+              </Card>
 
-                  <div className="space-y-3">
-                    <h4 className="font-medium">Información del DPP</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">Fecha de creación:</span>
-                        <p className="font-medium">15/01/2024</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Última actualización:</span>
-                        <p className="font-medium">25/01/2024</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Certificaciones:</span>
-                        <p className="font-medium">GOTS, Fair Trade</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Idiomas:</span>
-                        <p className="font-medium">ES, EN, QU</p>
-                      </div>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Usuarios Activos</p>
+                      <p className="text-2xl font-bold text-gray-900">1,205</p>
                     </div>
+                    <Users className="w-8 h-8 text-green-600" />
                   </div>
-                </TabsContent>
+                </CardContent>
+              </Card>
 
-                <TabsContent value="blockchain" className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      <span className="font-medium">Registrado en Blockchain</span>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Engagement Rate</p>
+                      <p className="text-2xl font-bold text-gray-900">78%</p>
                     </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Hash de Transacción:</span>
-                        <span className="text-sm font-mono">{currentProduct?.blockchain}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Red:</span>
-                        <span className="text-sm">Polygon Mainnet</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Confirmaciones:</span>
-                        <span className="text-sm">1,247</span>
-                      </div>
-                    </div>
-
-                    <Button variant="outline" className="w-full">
-                      Ver en Explorador de Blockchain
-                    </Button>
+                    <TrendingUp className="w-8 h-8 text-purple-600" />
                   </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Users className="w-8 h-8 text-blue-500" />
-                <div>
-                  <p className="text-2xl font-bold">127</p>
-                  <p className="text-sm text-gray-600">Artesanos Activos</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Package className="w-8 h-8 text-green-500" />
-                <div>
-                  <p className="text-2xl font-bold">1,543</p>
-                  <p className="text-sm text-gray-600">Productos Trazados</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-8 h-8 text-purple-500" />
-                <div>
-                  <p className="text-2xl font-bold">8.2</p>
-                  <p className="text-sm text-gray-600">Score ESG Promedio</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <AlertCircle className="w-8 h-8 text-orange-500" />
-                <div>
-                  <p className="text-2xl font-bold">3</p>
-                  <p className="text-sm text-gray-600">Alertas Pendientes</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Detailed Analytics */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Análisis de Interacciones</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={productionData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="productos" stroke="#3b82f6" strokeWidth={2} name="Productos" />
+                    <Line type="monotone" dataKey="co2_ahorrado" stroke="#10b981" strokeWidth={2} name="CO₂ Ahorrado" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )
