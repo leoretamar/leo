@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   QrCode,
@@ -17,16 +19,22 @@ import {
   Award,
   Recycle,
   MapPin,
+  Clock,
   CheckCircle,
   ArrowLeft,
   Heart,
   Share2,
   Gift,
+  Globe,
   Home,
   Star,
   Droplets,
   Users,
+  Target,
+  Trophy,
+  ArrowRight,
   Phone,
+  Mail,
 } from "lucide-react"
 
 interface Product {
@@ -72,7 +80,16 @@ interface Artisan {
 
 export default function MobileAppCustomer() {
   const [currentView, setCurrentView] = useState<
-    "home" | "scan" | "product" | "artisan" | "profile" | "search" | "programs" | "circularity" | "ambassador" | "challenges"
+    | "home"
+    | "scan"
+    | "product"
+    | "artisan"
+    | "profile"
+    | "search"
+    | "programs"
+    | "circularity"
+    | "ambassador"
+    | "challenges"
   >("home")
   const [userRole, setUserRole] = useState<"consumer" | "guest">("guest")
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -117,18 +134,15 @@ export default function MobileAppCustomer() {
       ubicacion: "Montevideo, Uruguay",
       telefono: "+598 99 123 456",
       email: "maria.gonzalez@gia.com",
-      biografia: "María es una artesana especializada en tejido tradicional uruguayo. Aprendió las técnicas de su abuela y ha perfeccionado su arte durante más de 20 años.",
+      biografia:
+        "María es una artesana especializada en tejido tradicional uruguayo. Aprendió las técnicas de su abuela y ha perfeccionado su arte durante más de 20 años.",
       productos_creados: 127,
       rating: 4.9,
       certificaciones: ["Artesana Certificada GIA", "Fair Trade", "Técnicas Tradicionales"],
       imagen: "/placeholder.svg?height=200&width=200",
       cooperativa: "Cooperativa Textil Montevideo",
-      logros: [
-        "Premio Artesana del Año 2023",
-        "Certificación en Sostenibilidad",
-        "Mentora de 15 nuevas artesanas"
-      ]
-    }
+      logros: ["Premio Artesana del Año 2023", "Certificación en Sostenibilidad", "Mentora de 15 nuevas artesanas"],
+    },
   ]
 
   const programs = {
@@ -142,7 +156,7 @@ export default function MobileAppCustomer() {
         { name: "Descuento 15%", points: 100, available: true },
         { name: "Descuento 20%", points: 200, available: false },
         { name: "Producto Gratis", points: 500, available: false },
-      ]
+      ],
     },
     ambassador: {
       level: "Embajador Bronce",
@@ -152,8 +166,8 @@ export default function MobileAppCustomer() {
       activities: [
         { type: "Referido exitoso", points: 25, date: "2024-03-15" },
         { type: "Post en redes sociales", points: 10, date: "2024-03-10" },
-        { type: "Review de producto", points: 15, date: "2024-03-05" }
-      ]
+        { type: "Review de producto", points: 15, date: "2024-03-05" },
+      ],
     },
     challenges: {
       month: "Marzo 2024",
@@ -167,7 +181,7 @@ export default function MobileAppCustomer() {
           description: "Comparte la historia de uno de tus productos en redes sociales",
           points: 20,
           completed: true,
-          date_completed: "2024-03-08"
+          date_completed: "2024-03-08",
         },
         {
           id: 2,
@@ -175,7 +189,7 @@ export default function MobileAppCustomer() {
           description: "Devuelve una prenda a través del programa de circularidad",
           points: 25,
           completed: true,
-          date_completed: "2024-03-12"
+          date_completed: "2024-03-12",
         },
         {
           id: 3,
@@ -183,7 +197,7 @@ export default function MobileAppCustomer() {
           description: "Invita a un amigo a unirse a la comunidad GIA",
           points: 30,
           completed: false,
-          progress: 0
+          progress: 0,
         },
         {
           id: 4,
@@ -191,10 +205,10 @@ export default function MobileAppCustomer() {
           description: "Participa en un taller virtual con nuestras artesanas",
           points: 40,
           completed: false,
-          progress: 0
-        }
-      ]
-    }
+          progress: 0,
+        },
+      ],
+    },
   }
 
   const texts = {
@@ -481,7 +495,11 @@ export default function MobileAppCustomer() {
           <div className="mt-6">
             <h3 className="font-medium mb-3">Productos de ejemplo:</h3>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start bg-transparent" onClick={() => handleScan("GIA-SWE-2025-001")}>
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-transparent"
+                onClick={() => handleScan("GIA-SWE-2025-001")}
+              >
                 <QrCode className="w-4 h-4 mr-2" />
                 GIA-SWE-2025-001 - Sweater Sol de Campo
               </Button>
@@ -541,11 +559,11 @@ export default function MobileAppCustomer() {
                     <p className="font-medium">Creado por {selectedProduct.artesano}</p>
                     <p className="text-sm text-gray-600">{selectedProduct.origen}</p>
                   </div>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
-                      setSelectedArtisan(artisans.find(a => a.id === selectedProduct.artesano_id) || null)
+                      setSelectedArtisan(artisans.find((a) => a.id === selectedProduct.artesano_id) || null)
                       setCurrentView("artisan")
                     }}
                   >
@@ -689,7 +707,10 @@ export default function MobileAppCustomer() {
                 <p className="text-gray-600">{selectedArtisan.especialidad}</p>
                 <div className="flex items-center justify-center gap-1 mt-2">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-4 h-4 ${i < Math.floor(selectedArtisan.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${i < Math.floor(selectedArtisan.rating) ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                    />
                   ))}
                   <span className="ml-2 text-sm text-gray-600">{selectedArtisan.rating}</span>
                 </div>
@@ -716,4 +737,489 @@ export default function MobileAppCustomer() {
                   <span>{selectedArtisan.ubicacion}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Phone className="w-4 h-4 text-\
+                  <Phone className="w-4 h-4 text-gray-400" />
+                  <span>{selectedArtisan.telefono}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="w-4 h-4 text-gray-400" />
+                  <span>{selectedArtisan.email}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Biografía</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-700 leading-relaxed">{selectedArtisan.biografia}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Certificaciones</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {selectedArtisan.certificaciones.map((cert, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <Award className="w-5 h-5 text-amber-600" />
+                    <span className="font-medium text-sm">{cert}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Logros Destacados</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {selectedArtisan.logros.map((logro, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <Trophy className="w-5 h-5 text-yellow-600" />
+                    <span className="font-medium text-sm">{logro}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Programs Screen
+  if (currentView === "programs") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("home")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">{t.programs}</h1>
+          </div>
+
+          <div className="space-y-4">
+            <Card
+              className="cursor-pointer hover:shadow-md bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
+              onClick={() => setCurrentView("circularity")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <Recycle className="w-12 h-12 text-green-600" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-green-900">Programa de Circularidad</h3>
+                    <p className="text-sm text-green-700">Devuelve tus prendas y obtén beneficios</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-sm font-medium text-green-600">{programs.circularity.points} puntos</span>
+                      <Badge className="bg-green-100 text-green-800">{programs.circularity.level}</Badge>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-green-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="cursor-pointer hover:shadow-md bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200"
+              onClick={() => setCurrentView("ambassador")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <Users className="w-12 h-12 text-blue-600" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-blue-900">Embajador GIA</h3>
+                    <p className="text-sm text-blue-700">Comparte la misión y obtén recompensas</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-sm font-medium text-blue-600">{programs.ambassador.points} puntos</span>
+                      <Badge className="bg-blue-100 text-blue-800">{programs.ambassador.level}</Badge>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-blue-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="cursor-pointer hover:shadow-md bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200"
+              onClick={() => setCurrentView("challenges")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <Target className="w-12 h-12 text-purple-600" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-purple-900">Desafíos Mensuales</h3>
+                    <p className="text-sm text-purple-700">Completa desafíos y gana premios</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-sm font-medium text-purple-600">
+                        {programs.challenges.completed}/{programs.challenges.total} completados
+                      </span>
+                      <Badge className="bg-purple-100 text-purple-800">{programs.challenges.points_month} puntos</Badge>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-purple-600" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Circularity Program Screen
+  if (currentView === "circularity") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("programs")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">Programa de Circularidad</h1>
+          </div>
+
+          <Card className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+            <CardContent className="p-6 text-center">
+              <Recycle className="w-16 h-16 mx-auto text-green-600 mb-4" />
+              <h2 className="text-xl font-bold text-green-900 mb-2">Nivel: {programs.circularity.level}</h2>
+              <p className="text-green-700 mb-4">Devuelve tus prendas al final de su vida útil</p>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-600">{programs.circularity.points}</p>
+                  <p className="text-xs text-green-700">Puntos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-600">{programs.circularity.products_returned}</p>
+                  <p className="text-xs text-blue-700">Devueltos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-purple-600">{programs.circularity.co2_saved}kg</p>
+                  <p className="text-xs text-purple-700">CO₂ Evitado</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Progreso al siguiente nivel</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Siguiente nivel</span>
+                  <span className="text-sm text-gray-600">
+                    {programs.circularity.points}/{programs.circularity.next_level}
+                  </span>
+                </div>
+                <Progress
+                  value={(programs.circularity.points / programs.circularity.next_level) * 100}
+                  className="h-3"
+                />
+                <p className="text-sm text-gray-600">
+                  Te faltan {programs.circularity.next_level - programs.circularity.points} puntos
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Recompensas Disponibles</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {programs.circularity.rewards.map((reward, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center justify-between p-4 rounded-lg border ${reward.available ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"}`}
+                  >
+                    <div>
+                      <h4 className="font-medium">{reward.name}</h4>
+                      <p className="text-sm text-gray-600">{reward.points} puntos</p>
+                    </div>
+                    <Button variant={reward.available ? "default" : "outline"} disabled={!reward.available} size="sm">
+                      {reward.available ? "Canjear" : "Bloqueado"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Ambassador Program Screen
+  if (currentView === "ambassador") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("programs")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">Embajador GIA</h1>
+          </div>
+
+          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+            <CardContent className="p-6 text-center">
+              <Users className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+              <h2 className="text-xl font-bold text-blue-900 mb-2">{programs.ambassador.level}</h2>
+              <p className="text-blue-700 mb-4">Comparte la misión GIA y obtén recompensas</p>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-600">{programs.ambassador.points}</p>
+                  <p className="text-xs text-blue-700">Puntos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-600">{programs.ambassador.referrals}</p>
+                  <p className="text-xs text-green-700">Referidos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-purple-600">{programs.ambassador.target_referrals}</p>
+                  <p className="text-xs text-purple-700">Objetivo</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Progreso a Embajador Plata</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Referidos</span>
+                  <span className="text-sm text-gray-600">
+                    {programs.ambassador.referrals}/{programs.ambassador.target_referrals}
+                  </span>
+                </div>
+                <Progress
+                  value={(programs.ambassador.referrals / programs.ambassador.target_referrals) * 100}
+                  className="h-3"
+                />
+                <p className="text-sm text-gray-600">
+                  Te faltan {programs.ambassador.target_referrals - programs.ambassador.referrals} referidos
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Actividad Reciente</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {programs.ambassador.activities.map((activity, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <h4 className="font-medium text-sm">{activity.type}</h4>
+                      <p className="text-xs text-gray-600">{activity.date}</p>
+                    </div>
+                    <Badge className="bg-green-100 text-green-800">+{activity.points}</Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Challenges Screen
+  if (currentView === "challenges") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("programs")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">Desafíos Mensuales</h1>
+          </div>
+
+          <Card className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+            <CardContent className="p-6 text-center">
+              <Target className="w-16 h-16 mx-auto text-purple-600 mb-4" />
+              <h2 className="text-xl font-bold text-purple-900 mb-2">{programs.challenges.month}</h2>
+              <p className="text-purple-700 mb-4">Completa desafíos y gana puntos especiales</p>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-purple-600">{programs.challenges.completed}</p>
+                  <p className="text-xs text-purple-700">Completados</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-600">{programs.challenges.total}</p>
+                  <p className="text-xs text-green-700">Total</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-orange-600">{programs.challenges.points_month}</p>
+                  <p className="text-xs text-orange-700">Puntos</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Desafíos de {programs.challenges.month}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {programs.challenges.challenges.map((challenge) => (
+                  <div
+                    key={challenge.id}
+                    className={`p-4 rounded-lg border ${challenge.completed ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          {challenge.completed ? (
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          ) : (
+                            <Clock className="w-5 h-5 text-gray-400" />
+                          )}
+                          <h4 className="font-medium text-sm">{challenge.title}</h4>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2">{challenge.description}</p>
+                        {challenge.completed && (
+                          <p className="text-xs text-green-600">Completado el {challenge.date_completed}</p>
+                        )}
+                      </div>
+                      <Badge
+                        className={challenge.completed ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+                      >
+                        {challenge.points} pts
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Search Screen
+  if (currentView === "search") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("home")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">{t.search}</h1>
+          </div>
+
+          <div className="space-y-4">
+            <Input placeholder="Buscar por código, nombre o artesana..." />
+
+            <div className="text-center py-8">
+              <Search className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <p className="text-gray-500">Ingresa un término de búsqueda</p>
+            </div>
+          </div>
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  // Profile Screen
+  if (currentView === "profile") {
+    return (
+      <div className="max-w-md mx-auto bg-white min-h-screen pb-20">
+        <div className="p-4">
+          <div className="flex items-center gap-4 mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("home")}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-bold">{t.profile}</h1>
+          </div>
+
+          {userRole === "guest" ? (
+            <div className="text-center py-8">
+              <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h2 className="text-xl font-bold mb-2">Únete a GIA</h2>
+              <p className="text-gray-600 mb-6">Crea una cuenta para acceder a todas las funciones</p>
+              <div className="space-y-3">
+                <Button className="w-full" onClick={() => setUserRole("consumer")}>
+                  Crear Cuenta
+                </Button>
+                <Button variant="outline" className="w-full bg-transparent">
+                  Iniciar Sesión
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <img
+                    src="/placeholder.svg?height=80&width=80"
+                    alt="Usuario"
+                    className="w-20 h-20 rounded-full mx-auto mb-4"
+                  />
+                  <h2 className="text-xl font-bold">Usuario GIA</h2>
+                  <p className="text-gray-600">Miembro desde 2024</p>
+                </CardContent>
+              </Card>
+
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full justify-start bg-transparent">
+                  <Bell className="w-5 h-5 mr-3" />
+                  {t.notifications}
+                </Button>
+                <Button variant="outline" className="w-full justify-start bg-transparent">
+                  <Settings className="w-5 h-5 mr-3" />
+                  {t.settings}
+                </Button>
+                <Button variant="outline" className="w-full justify-start bg-transparent">
+                  <Globe className="w-5 h-5 mr-3" />
+                  {t.language}
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-red-600 bg-transparent">
+                  <ArrowLeft className="w-5 h-5 mr-3" />
+                  {t.logout}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <MobileNavigation />
+      </div>
+    )
+  }
+
+  return null
+}
