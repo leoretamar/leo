@@ -45,7 +45,7 @@ export default function ESGDashboard() {
     environmental: 87,
     social: 92,
     governance: 85,
-    overall: 88,
+    overall: 88
   }
 
   const environmentalData = [
@@ -72,7 +72,7 @@ export default function ESGDashboard() {
       progress: 78,
       target_date: "2025",
       status: "En Progreso",
-      icon: Leaf,
+      icon: Leaf
     },
     {
       id: 2,
@@ -81,7 +81,7 @@ export default function ESGDashboard() {
       progress: 92,
       target_date: "2024",
       status: "Casi Completado",
-      icon: Recycle,
+      icon: Recycle
     },
     {
       id: 3,
@@ -90,7 +90,7 @@ export default function ESGDashboard() {
       progress: 68,
       target_date: "2025",
       status: "En Progreso",
-      icon: Users,
+      icon: Users
     },
     {
       id: 4,
@@ -99,8 +99,8 @@ export default function ESGDashboard() {
       progress: 95,
       target_date: "2024",
       status: "Casi Completado",
-      icon: Shield,
-    },
+      icon: Shield
+    }
   ]
 
   const certifications = [
@@ -115,20 +115,20 @@ export default function ESGDashboard() {
       co2_avoided: 2845,
       water_saved: 18420,
       waste_diverted: 567,
-      renewable_energy: 85,
+      renewable_energy: 85
     },
     social: {
       artisans_supported: 89,
       communities: 12,
       jobs_created: 156,
-      training_hours: 2340,
+      training_hours: 2340
     },
     economic: {
       fair_trade_premium: 45000,
       local_investment: 120000,
       artisan_income_increase: 35,
-      supply_chain_transparency: 98,
-    },
+      supply_chain_transparency: 98
+    }
   }
 
   const getStatusColor = (status) => {
@@ -263,9 +263,7 @@ export default function ESGDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Agua Conservada</p>
-                      <p className="text-2xl font-bold text-blue-600">
-                        {impactMetrics.environmental.water_saved.toLocaleString()}L
-                      </p>
+                      <p className="text-2xl font-bold text-blue-600">{impactMetrics.environmental.water_saved.toLocaleString()}L</p>
                       <div className="flex items-center mt-1">
                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                         <span className="text-sm text-green-600">+22% vs año anterior</span>
@@ -281,9 +279,7 @@ export default function ESGDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Residuos Desviados</p>
-                      <p className="text-2xl font-bold text-orange-600">
-                        {impactMetrics.environmental.waste_diverted}kg
-                      </p>
+                      <p className="text-2xl font-bold text-orange-600">{impactMetrics.environmental.waste_diverted}kg</p>
                       <div className="flex items-center mt-1">
                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                         <span className="text-sm text-green-600">+15% vs año anterior</span>
@@ -299,9 +295,7 @@ export default function ESGDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Energía Renovable</p>
-                      <p className="text-2xl font-bold text-purple-600">
-                        {impactMetrics.environmental.renewable_energy}%
-                      </p>
+                      <p className="text-2xl font-bold text-purple-600">{impactMetrics.environmental.renewable_energy}%</p>
                       <div className="flex items-center mt-1">
                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                         <span className="text-sm text-green-600">+5% vs año anterior</span>
@@ -326,20 +320,8 @@ export default function ESGDashboard() {
                       <XAxis dataKey="month" />
                       <YAxis />
                       <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="co2_reduction"
-                        stroke="#10b981"
-                        strokeWidth={2}
-                        name="CO₂ Reducido (kg)"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="water_saved"
-                        stroke="#3b82f6"
-                        strokeWidth={2}
-                        name="Agua Ahorrada (L)"
-                      />
+                      <Line type="monotone" dataKey="co2_reduction" stroke="#10b981" strokeWidth={2} name="CO₂ Reducido (kg)" />
+                      <Line type="monotone" dataKey="water_saved" stroke="#3b82f6" strokeWidth={2} name="Agua Ahorrada (L)" />
                     </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -356,7 +338,7 @@ export default function ESGDashboard() {
                         data={[
                           { name: "Reducción CO₂", value: 45, color: "#10b981" },
                           { name: "Conservación Agua", value: 35, color: "#3b82f6" },
-                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" },
+                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" }
                         ]}
                         cx="50%"
                         cy="50%"
@@ -367,7 +349,7 @@ export default function ESGDashboard() {
                         {[
                           { name: "Reducción CO₂", value: 45, color: "#10b981" },
                           { name: "Conservación Agua", value: 35, color: "#3b82f6" },
-                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" },
+                          { name: "Gestión Residuos", value: 20, color: "#f59e0b" }
                         ].map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
@@ -436,9 +418,7 @@ export default function ESGDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Horas de Capacitación</p>
-                      <p className="text-2xl font-bold text-orange-600">
-                        {impactMetrics.social.training_hours.toLocaleString()}
-                      </p>
+                      <p className="text-2xl font-bold text-orange-600">{impactMetrics.social.training_hours.toLocaleString()}</p>
                       <div className="flex items-center mt-1">
                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                         <span className="text-sm text-green-600">+30% vs año anterior</span>
@@ -461,9 +441,7 @@ export default function ESGDashboard() {
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-gray-900">{item.category}</span>
-                        <span className="text-sm text-gray-600">
-                          {item.value} / {item.target}
-                        </span>
+                        <span className="text-sm text-gray-600">{item.value} / {item.target}</span>
                       </div>
                       <Progress value={(item.value / item.target) * 100} className="h-3" />
                       <div className="flex justify-between text-xs text-gray-500">
@@ -493,7 +471,9 @@ export default function ESGDashboard() {
                           <p className="text-sm text-gray-600">Obtenido en {cert.date}</p>
                         </div>
                         <div className="text-right">
-                          <Badge className={getStatusColor(cert.status)}>{cert.status}</Badge>
+                          <Badge className={getStatusColor(cert.status)}>
+                            {cert.status}
+                          </Badge>
                           <p className="text-sm text-gray-600 mt-1">{cert.score}</p>
                         </div>
                       </div>
@@ -570,75 +550,10 @@ export default function ESGDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-semibold text-gray-900">{goal.title}</h3>
-                          <Badge className={getStatusColor(goal.status)}>{goal.status}</Badge>
+                          <Badge className={getStatusColor(goal.status)}>
+                            {goal.status}
+                          </Badge>
                         </div>
                         <p className="text-sm text-gray-600 mb-4">{goal.description}</p>
                         <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Progreso</span>
-                            <span>{goal.progress}%</span>
-                          </div>
-                          <Progress value={goal.progress} className="h-2" />
-                          <div className="flex justify-between text-xs text-gray-500">
-                            <span>Meta: {goal.target_date}</span>
-                            <span>{goal.progress}% completado</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Goals Timeline */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Cronograma de Objetivos 2024-2025</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {sustainabilityGoals.map((goal, index) => (
-                    <div key={goal.id} className="relative">
-                      {index < sustainabilityGoals.length - 1 && (
-                        <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-300" />
-                      )}
-                      <div className="flex items-start gap-4">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            goal.progress >= 90 ? "bg-green-100" : goal.progress >= 50 ? "bg-yellow-100" : "bg-gray-100"
-                          }`}
-                        >
-                          <goal.icon
-                            className={`w-6 h-6 ${
-                              goal.progress >= 90
-                                ? "text-green-600"
-                                : goal.progress >= 50
-                                  ? "text-yellow-600"
-                                  : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-gray-900">{goal.title}</h4>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline">{goal.target_date}</Badge>
-                              <span className="text-sm font-medium text-gray-600">{goal.progress}%</span>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-600">{goal.description}</p>
-                          <Progress value={goal.progress} className="h-2 mt-2" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  )
-}
+                          <div className\
