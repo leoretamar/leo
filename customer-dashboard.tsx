@@ -33,6 +33,9 @@ import {
   CheckCircle,
   Clock,
   ArrowRight,
+  Factory,
+  Scissors,
+  Route,
 } from "lucide-react"
 
 export default function CustomerDashboard() {
@@ -56,6 +59,71 @@ export default function CustomerDashboard() {
       historia:
         "Esta prenda fue tejida a mano por María, una artesana con 20 años de experiencia en técnicas tradicionales uruguayas. Cada punto fue cuidadosamente trabajado utilizando lana merino de ovejas criadas en pasturas naturales, sin químicos ni pesticidas.",
       puntuacion_circularidad: 92,
+      trazabilidad: [
+        {
+          etapa: "Origen de Materiales",
+          fecha: "2024-01-01",
+          ubicacion: "Estancia La Esperanza, Montevideo",
+          responsable: "Cooperativa Ganadera del Sur",
+          descripcion: "Selección de lana merino de ovejas criadas en pasturas naturales",
+          certificaciones: ["Organic", "Animal Welfare"],
+          coordenadas: "-34.9011, -56.1645",
+        },
+        {
+          etapa: "Procesamiento de Lana",
+          fecha: "2024-01-05",
+          ubicacion: "Textil Natural SA, Montevideo",
+          responsable: "Juan Carlos Mendez",
+          descripcion: "Lavado y cardado de lana con procesos ecológicos",
+          certificaciones: ["GOTS", "OEKO-TEX"],
+          coordenadas: "-34.8941, -56.1591",
+        },
+        {
+          etapa: "Hilado",
+          fecha: "2024-01-08",
+          ubicacion: "Hilandería Artesanal, Canelones",
+          responsable: "Ana María Rodríguez",
+          descripcion: "Hilado tradicional en rueca manual",
+          certificaciones: ["Fair Trade"],
+          coordenadas: "-34.5228, -56.2775",
+        },
+        {
+          etapa: "Teñido Natural",
+          fecha: "2024-01-10",
+          ubicacion: "Taller de Tintes, Montevideo",
+          responsable: "Carlos Silva",
+          descripcion: "Teñido con extractos naturales de plantas autóctonas",
+          certificaciones: ["Natural Dyes", "Eco-Friendly"],
+          coordenadas: "-34.9058, -56.1913",
+        },
+        {
+          etapa: "Tejido Artesanal",
+          fecha: "2024-01-12",
+          ubicacion: "Taller María González, Montevideo",
+          responsable: "María González",
+          descripcion: "Tejido a mano con técnicas tradicionales uruguayas",
+          certificaciones: ["Artisan Certified", "Traditional Craft"],
+          coordenadas: "-34.9011, -56.1645",
+        },
+        {
+          etapa: "Control de Calidad",
+          fecha: "2024-01-14",
+          ubicacion: "Centro GIA, Montevideo",
+          responsable: "Equipo de Calidad GIA",
+          descripcion: "Inspección final y certificación de calidad",
+          certificaciones: ["GIA Quality", "DPP Compliant"],
+          coordenadas: "-34.9011, -56.1645",
+        },
+        {
+          etapa: "Empaque Sostenible",
+          fecha: "2024-01-15",
+          ubicacion: "Centro de Distribución GIA",
+          responsable: "Equipo de Logística",
+          descripcion: "Empaque en materiales 100% reciclables",
+          certificaciones: ["Sustainable Packaging"],
+          coordenadas: "-34.9011, -56.1645",
+        },
+      ],
     },
     {
       id: "2",
@@ -72,6 +140,35 @@ export default function CustomerDashboard() {
       historia:
         "Ana utiliza técnicas tradicionales transmitidas por generaciones en su familia. Este cardigan fue creado con algodón orgánico cultivado localmente, teñido con tintes naturales extraídos de plantas autóctonas.",
       puntuacion_circularidad: 88,
+      trazabilidad: [
+        {
+          etapa: "Cultivo de Algodón",
+          fecha: "2023-12-01",
+          ubicacion: "Finca Orgánica del Este, Maldonado",
+          responsable: "Cooperativa Algodón Orgánico",
+          descripcion: "Cultivo de algodón orgánico sin pesticidas",
+          certificaciones: ["Organic", "Rainforest Alliance"],
+          coordenadas: "-34.4815, -54.9574",
+        },
+        {
+          etapa: "Procesamiento",
+          fecha: "2024-01-15",
+          ubicacion: "Textil del Este, Punta del Este",
+          responsable: "Roberto Fernández",
+          descripcion: "Desmotado y cardado del algodón orgánico",
+          certificaciones: ["GOTS"],
+          coordenadas: "-34.9581, -54.8975",
+        },
+        {
+          etapa: "Tejido",
+          fecha: "2024-02-10",
+          ubicacion: "Taller Ana Rodríguez, Punta del Este",
+          responsable: "Ana Rodríguez",
+          descripcion: "Tejido artesanal con técnicas familiares",
+          certificaciones: ["Artisan Certified"],
+          coordenadas: "-34.9581, -54.8975",
+        },
+      ],
     },
     {
       id: "3",
@@ -88,6 +185,35 @@ export default function CustomerDashboard() {
       historia:
         "Carmen es parte de una cooperativa de artesanas que rescata técnicas ancestrales de tejido. Este poncho incorpora fibras recicladas de prendas anteriores, dándoles una nueva vida.",
       puntuacion_circularidad: 95,
+      trazabilidad: [
+        {
+          etapa: "Recolección de Fibras",
+          fecha: "2024-02-01",
+          ubicacion: "Centro de Reciclaje Textil, Colonia",
+          responsable: "Cooperativa de Reciclaje",
+          descripcion: "Recolección y clasificación de fibras recicladas",
+          certificaciones: ["Recycled Content"],
+          coordenadas: "-34.4631, -57.8390",
+        },
+        {
+          etapa: "Procesamiento de Reciclado",
+          fecha: "2024-02-15",
+          ubicacion: "Planta de Reciclaje, Colonia",
+          responsable: "Técnicos Especializados",
+          descripcion: "Limpieza y preparación de fibras recicladas",
+          certificaciones: ["Circular Economy"],
+          coordenadas: "-34.4631, -57.8390",
+        },
+        {
+          etapa: "Tejido Ancestral",
+          fecha: "2024-03-01",
+          ubicacion: "Taller Carmen Silva, Colonia",
+          responsable: "Carmen Silva",
+          descripcion: "Tejido con técnicas ancestrales de 200 años",
+          certificaciones: ["Traditional Craft", "Cultural Heritage"],
+          coordenadas: "-34.4631, -57.8390",
+        },
+      ],
     },
   ]
 
@@ -233,6 +359,32 @@ export default function CustomerDashboard() {
     circularidad_promedio: Math.round(
       productos.reduce((acc, p) => acc + p.puntuacion_circularidad, 0) / productos.length,
     ),
+  }
+
+  const getStageIcon = (etapa: string) => {
+    switch (etapa.toLowerCase()) {
+      case "origen de materiales":
+      case "cultivo de algodón":
+      case "recolección de fibras":
+        return <TreePine className="w-5 h-5 text-green-600" />
+      case "procesamiento de lana":
+      case "procesamiento":
+      case "procesamiento de reciclado":
+        return <Factory className="w-5 h-5 text-blue-600" />
+      case "hilado":
+      case "tejido artesanal":
+      case "tejido":
+      case "tejido ancestral":
+        return <Scissors className="w-5 h-5 text-purple-600" />
+      case "teñido natural":
+        return <Droplets className="w-5 h-5 text-orange-600" />
+      case "control de calidad":
+        return <CheckCircle className="w-5 h-5 text-green-600" />
+      case "empaque sostenible":
+        return <Package className="w-5 h-5 text-brown-600" />
+      default:
+        return <Route className="w-5 h-5 text-gray-600" />
+    }
   }
 
   // Vista de perfil de artesana
@@ -724,8 +876,9 @@ export default function CustomerDashboard() {
 
           {/* Story & Details */}
           <Tabs defaultValue="historia" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm">
+            <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm">
               <TabsTrigger value="historia">Historia</TabsTrigger>
+              <TabsTrigger value="trazabilidad">Trazabilidad</TabsTrigger>
               <TabsTrigger value="materiales">Materiales</TabsTrigger>
               <TabsTrigger value="cuidados">Cuidados</TabsTrigger>
             </TabsList>
@@ -756,6 +909,85 @@ export default function CustomerDashboard() {
                       <p className="font-medium">Certificado</p>
                       <p className="text-sm text-stone-600">Calidad garantizada</p>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="trazabilidad">
+              <Card className="bg-white/80 backdrop-blur-sm border-stone-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Route className="w-5 h-5 text-blue-600" />
+                    Trazabilidad Completa
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {producto.trazabilidad.map((etapa, index) => (
+                      <div key={index} className="relative">
+                        <div className="flex items-start gap-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                              {getStageIcon(etapa.etapa)}
+                            </div>
+                            {index < producto.trazabilidad.length - 1 && (
+                              <div className="w-px h-16 bg-gray-200 mt-2"></div>
+                            )}
+                          </div>
+                          <div className="flex-1 pb-8">
+                            <div className="bg-stone-50 rounded-lg p-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <h3 className="font-semibold text-stone-900">{etapa.etapa}</h3>
+                                <Badge variant="outline" className="text-xs">
+                                  {etapa.fecha}
+                                </Badge>
+                              </div>
+                              <p className="text-stone-700 mb-3">{etapa.descripcion}</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                <div>
+                                  <span className="font-medium text-stone-600">Ubicación:</span>
+                                  <p className="text-stone-700">{etapa.ubicacion}</p>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-stone-600">Responsable:</span>
+                                  <p className="text-stone-700">{etapa.responsable}</p>
+                                </div>
+                              </div>
+                              {etapa.certificaciones && etapa.certificaciones.length > 0 && (
+                                <div className="mt-3">
+                                  <span className="font-medium text-stone-600 text-sm">Certificaciones:</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {etapa.certificaciones.map((cert, certIndex) => (
+                                      <Badge
+                                        key={certIndex}
+                                        variant="outline"
+                                        className="text-xs bg-green-50 text-green-700 border-green-200"
+                                      >
+                                        {cert}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {etapa.coordenadas && (
+                                <div className="mt-3">
+                                  <span className="font-medium text-stone-600 text-sm">Coordenadas:</span>
+                                  <p className="text-stone-700 text-sm font-mono">{etapa.coordenadas}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="font-medium text-blue-900 mb-2">🌍 Transparencia Total</h4>
+                    <p className="text-blue-800 text-sm">
+                      Cada etapa de producción ha sido documentada y verificada, garantizando la máxima transparencia en
+                      toda la cadena de suministro. Puedes rastrear tu producto desde el origen hasta tu hogar.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
